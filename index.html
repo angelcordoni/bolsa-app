@@ -136,7 +136,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 /* Horario de la bolsa de EE. UU. en hora de Venezuela */
 .hours{background:#fff;color:#000;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.45}
 .hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
-.hours .st.open i{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.2)}.hours .st.pre i{background:#ca8a04}.hours .st.closed i{background:#dc2626}
+.hours .st.open{color:#15803d}.hours .st.closed{color:#dc2626}.hours .st.open i{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.2)}.hours .st.closed i{background:#dc2626}
 .hours .cd{font-weight:600;margin-bottom:8px}.hours h4{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
 .hours table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.hours td{padding:2px 0;border:none;text-align:left;white-space:nowrap}.hours td+td{text-align:right;font-weight:700}
 .hours .nt{color:#444;font-size:11px;margin-top:6px}
@@ -410,9 +410,7 @@ function renderHours(){const now=new Date(),ny=nyDay(now),ve=tzParts(now,'Americ
  // minutos hasta la próxima apertura
  const nextOpen=()=>{let t=new Date(now);for(let i=0;i<10;i++){const d=nyDay(t);if(d.trading&&(i>0||m<O))return (i===0?O-m:(i*1440-m+O));t=new Date(t.getTime()+864e5)}return null};
  if(ny.trading&&m>=O&&m<C){cls='open';txt='Bolsa abierta';cd='Cierra en '+dur(C-m)}
- else if(ny.trading&&m>=240&&m<O){cls='pre';txt='Preapertura';cd='Abre en '+dur(O-m)}
- else if(ny.trading&&m>=C&&m<1200){cls='pre';txt='Bolsa cerrada · after-hours';const n=nextOpen();cd=n?'Abre en '+dur(n):''}
- else{cls='closed';txt=ny.hol?'Bolsa cerrada · festivo':'Bolsa cerrada';const n=nextOpen();cd=n?'Abre en '+dur(n):''}
+ else{cls='closed';txt='Bolsa cerrada';const n=nextOpen();cd=(n?'Abre en '+dur(n):'')+(ny.hol?' · hoy es festivo':'')}
  $('#hours').innerHTML=`<div class="st ${cls}"><i></i>${txt}</div><div class="cd">${cd}</div>
  <h4>Horario EE. UU. · hora de Venezuela</h4><table><tr><td>Preapertura</td><td>${hm(240+diff)}</td></tr><tr><td>Apertura</td><td>${hm(O+diff)}</td></tr><tr><td>Cierre</td><td>${hm(C+diff)}</td></tr><tr><td>After-hours hasta</td><td>${hm(1200+diff)}</td></tr></table>
  <div class="nt">Lunes a viernes · ahora en Caracas ${hm(ve.min)}${NY_HALF[ny.p.date]?' · hoy cierra antes':''}</div>`}
