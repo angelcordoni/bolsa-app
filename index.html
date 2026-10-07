@@ -81,6 +81,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
 .tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
 @media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
+.more{text-align:center!important;padding:16px}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
@@ -183,7 +184,9 @@ const sw=(c,da,w)=>`<svg width="24" height="8" aria-hidden="true" style="vertica
 const zoneAct={green:'Comprar',yellow:'Zona de compra',red:'No comprar'};
 const zoneTxt={green:'Bajo MM100',yellow:'Bajo MM20',red:'Sobre MM20'};
 const isFav=s=>ST.favs.includes(s);
-function toggleFav(s){ST.favs=isFav(s)?ST.favs.filter(x=>x!==s):ST.favs.concat([s]);save();renderAll()}
+// Cambia la estrella en el sitio, sin repintar las tablas enteras
+function toggleFav(s){ST.favs=isFav(s)?ST.favs.filter(x=>x!==s):ST.favs.concat([s]);save();const on=isFav(s);
+ document.querySelectorAll('[data-fav]').forEach(b=>{if(b.dataset.fav===s){b.classList.toggle('on',on);b.textContent=on?'★':'☆'}});if(!$('#port').hidden)renderAll()}
 async function api(p){const r=await fetch(p);const j=await r.json();if(!r.ok)throw new Error(j.error||r.status);return j}
 async function fetchSymbols(syms,onProgress){
  const chunks=[];for(let i=0;i<syms.length;i+=25)chunks.push(syms.slice(i,i+25));
@@ -211,16 +214,20 @@ function row(x){
  if(x.price==null)return `<tr>${fav}<td class="l"><span class="sym">${esc(x.symbol)}</span></td><td colspan="10" class="l mut">Cargando…</td></tr>`;
  return `<tr class="${x.zone?'z-'+x.zone:''}">${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span><div class="nm">${esc(x.name)}</div></td><td class="l">${typeBadge(x.type)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''} ${x._chg?'flash':''}">${f(x.price)}</span> <span class="mut">${esc(x.currency)}</span>${x.zone?`<div class="za">${zoneAct[x.zone]}</div>`:''}</td><td>${sg(x.change_pct)}</td>${maCells(x)}<td>${rsiC(x.rsi)}</td><td>${sg(x.ret_3m)}</td><td>${pill(x.score)}<div class="nm">${x.label}</div></td></tr>`}
 function bind(root,rerender){
- root.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;sortD=sortK===k?-sortD:-1;sortK=k;renderAll()});
+ root.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;sortD=sortK===k?-sortD:-1;sortK=k;shown=PAGE;renderAll()});
  root.querySelectorAll('[data-s]').forEach(el=>el.onclick=()=>detail(el.dataset.s));
  root.querySelectorAll('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(b.dataset.fav)})}
+const PAGE=100;let shown=PAGE;
 function renderScan(){
  const ft=$('#ftype').value,fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
  let rows=listSyms().map(s=>DATA[s]||{symbol:s});
  rows=rows.filter(x=>{if(tx&&!(x.symbol.toLowerCase().includes(tx)||(x.name||'').toLowerCase().includes(tx)))return false;
   if(ft!=='all'&&x.type&&x.type!==ft)return false;if(fl==='all')return true;if(x.error||x.price==null)return false;
   if(['green','yellow','red'].includes(fl))return x.zone===fl;if(fl==='fav')return x.score>=70;if(fl==='os')return x.rsi<30;if(fl==='ob')return x.rsi>70;return true});
- $('#tscan').innerHTML=head()+'<tbody>'+sortRows(rows).map(row).join('')+(rows.length?'':'<tr><td colspan="12" class="l mut">Ningún valor cumple el filtro.</td></tr>')+'</tbody>';bind($('#tscan'))}
+ // Solo se pintan las primeras filas: pintar las 600 de golpe bloquea la página medio segundo
+ const all=sortRows(rows),vis=all.slice(0,shown),rest=all.length-vis.length;
+ $('#tscan').innerHTML=head()+'<tbody>'+vis.map(row).join('')+(rows.length?'':'<tr><td colspan="12" class="l mut">Ningún valor cumple el filtro.</td></tr>')+(rest>0?`<tr><td colspan="12" class="more"><button class="b" id="more">Mostrar ${Math.min(rest,PAGE)} más · quedan ${rest}</button></td></tr>`:'')+'</tbody>';bind($('#tscan'));
+ if(rest>0)$('#more').onclick=()=>{shown+=PAGE;renderScan()}}
 function renderPort(){
  const P=ST.portfolio;let tv={},tc={};
  const rows=P.map(p=>{const x=DATA[p.symbol]||{};const val=x.price!=null?x.price*p.shares:null,cost=p.cost*p.shares;const cur=x.currency||'?';
@@ -235,13 +242,15 @@ function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=
  let pick=xs.filter(x=>x.zone==='green');if(pick.length<3)pick=pick.concat(xs.filter(x=>x.zone==='yellow'));
  pick=pick.sort((a,b)=>b.score-a.score).slice(0,4);
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
-function renderAll(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
+// Agrupa varias peticiones de repintado en una sola por fotograma
+let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
+function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
- if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderScan()}
+ if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderAll()}
 $('#lst').innerHTML=LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=curList;
-$('#lst').onchange=()=>{curList=$('#lst').value;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
-$('#flt').onchange=renderScan;$('#ftype').onchange=renderScan;$('#flttxt').oninput=renderScan;
+$('#lst').onchange=()=>{curList=$('#lst').value;shown=PAGE;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
+const refilter=()=>{shown=PAGE;renderAll()};$('#flt').onchange=refilter;$('#ftype').onchange=refilter;$('#flttxt').oninput=refilter;
 async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
  try{const r=await api('/api/search?q='+encodeURIComponent(q));$('#sugs').innerHTML=r.length?r.map(x=>`<span><button class="b" data-d="${esc(x.symbol)}">${esc(x.symbol)} · ${esc(x.name)} (${esc(x.exchange)})</button> <button class="fav ${isFav(x.symbol)?'on':''}" data-sf="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></span>`).join(''):'<span class="mut">Sin resultados</span>';
  $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>detail(b.dataset.d));
