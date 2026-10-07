@@ -163,7 +163,6 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
  <div class="bar">
   <select id="lst" aria-label="Lista de valores"></select>
   <input id="flttxt" placeholder="Filtrar por nombre o símbolo" size="24">
-  <select id="ftype" aria-label="Tipo"><option value="all">Acciones y ETFs</option><option value="EQUITY">Solo acciones</option><option value="ETF">Solo ETFs</option></select>
   <select id="flt" aria-label="Filtro"><option value="all">Todos</option><option value="green">Verde: bajo MM100</option><option value="yellow">Amarillo: bajo MM20</option><option value="red">Rojo: sobre MM20</option><option value="fav">Score ≥ 70</option><option value="os">RSI &lt; 30</option><option value="ob">RSI &gt; 70</option></select>
  </div>
  </div>
@@ -191,7 +190,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
  <p class="lead">Esta app revisa acciones y ETFs con datos de Yahoo Finance, calcula sus medias móviles y su RSI, les da una nota de 0 a 100 y te dice, con el color del precio, si están en zona de compra.</p>
  <h3>Las tres secciones</h3>
  <dl>
-  <dt>Mercado</dt><dd>La tabla con todos los valores. Arriba eliges la lista (Todo el mercado, S&amp;P 500, Nasdaq 100, Dow Jones 30, IBEX 35, ETFs o Populares), filtras por tipo, por color o por texto y buscas cualquier empresa o ETF del mundo. Pulsa en el nombre de una columna para ordenar.</dd>
+  <dt>Mercado</dt><dd>La tabla con todos los valores. Arriba eliges la lista (Todo el mercado, Compañías, S&amp;P 500, Nasdaq 100, Dow Jones 30, IBEX 35, ETFs o Populares), filtras por color o por texto y buscas cualquier empresa o ETF del mundo. Pulsa en el nombre de una columna para ordenar.</dd>
   <dt>Mi cartera</dt><dd>Tus posiciones (símbolo, número de acciones y precio medio de compra) con su valor actual y su ganancia o pérdida, y debajo tus favoritos. Para guardar un favorito pulsa ☆ junto a cualquier valor.</dd>
   <dt>Detalle</dt><dd>La ficha de un valor: gráfico de un año con el precio y las cuatro medias, el RSI, el desglose del score y esta guía. Pulsa el símbolo de cualquier valor para abrirla.</dd>
  </dl>
@@ -282,10 +281,10 @@ function bind(root,rerender){
  root.querySelectorAll('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(b.dataset.fav)})}
 const PAGE=100;let shown=PAGE;
 function renderScan(){
- const ft=$('#ftype').value,fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
+const fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
  let rows=listSyms().map(s=>DATA[s]||{symbol:s});
  rows=rows.filter(x=>{if(tx&&!(x.symbol.toLowerCase().includes(tx)||(x.name||'').toLowerCase().includes(tx)))return false;
-  if(ft!=='all'&&x.type&&x.type!==ft)return false;if(fl==='all')return true;if(x.error||x.price==null)return false;
+  if(fl==='all')return true;if(x.error||x.price==null)return false;
   if(['green','yellow','red'].includes(fl))return x.zone===fl;if(fl==='fav')return x.score>=70;if(fl==='os')return x.rsi<30;if(fl==='ob')return x.rsi>70;return true});
  // Solo se pintan las primeras filas: pintar las 600 de golpe bloquea la página medio segundo
  const all=sortRows(rows),vis=all.slice(0,shown),rest=all.length-vis.length;
@@ -322,7 +321,7 @@ function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.t
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderAll()}
 $('#lst').innerHTML=LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=curList;
 $('#lst').onchange=()=>{curList=$('#lst').value;shown=PAGE;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
-const refilter=()=>{shown=PAGE;renderAll()};$('#flt').onchange=refilter;$('#ftype').onchange=refilter;$('#flttxt').oninput=refilter;
+const refilter=()=>{shown=PAGE;renderAll()};$('#flt').onchange=refilter;$('#flttxt').oninput=refilter;
 async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
  try{const r=await api('/api/search?q='+encodeURIComponent(q));$('#sugs').innerHTML=r.length?r.map(x=>`<span><button class="b" data-d="${esc(x.symbol)}">${esc(x.symbol)} · ${esc(x.name)} (${esc(x.exchange)})</button> <button class="fav ${isFav(x.symbol)?'on':''}" data-sf="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></span>`).join(''):'<span class="mut">Sin resultados</span>';
  $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>detail(b.dataset.d));

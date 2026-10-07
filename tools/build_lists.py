@@ -12,6 +12,7 @@ def uniq(xs):
 todo = uniq(populares + sp500 + nasdaq100 + dow30 + ibex35 + etfs)
 lists = [
     {"id": "todo", "name": "Todo el mercado", "symbols": todo},
+    {"id": "companias", "name": "Compañías", "symbols": [x for x in todo if x not in set(etfs)]},
     {"id": "populares", "name": "Populares", "symbols": uniq(populares)},
     {"id": "sp500", "name": "S&P 500", "symbols": uniq(sp500)},
     {"id": "nasdaq100", "name": "Nasdaq 100", "symbols": uniq(nasdaq100)},
