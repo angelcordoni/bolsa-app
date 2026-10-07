@@ -180,4 +180,4 @@ function send(res, code, body, maxAge = 10) {
   res.end(JSON.stringify(body));
 }
 
-module.exports = { analyze, analyzeMany, search, send, computeScore, rsiSeries, smaSeries, zoneOf };
+module.exports = { analyze, analyzeMany, search, send, live, computeScore, rsiSeries, smaSeries, zoneOf };

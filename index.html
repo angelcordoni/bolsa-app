@@ -84,13 +84,6 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .more{text-align:center!important;padding:16px}
 
 /* Resumen del mercado */
-.pulse{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:14px;margin-bottom:24px}
-.pc{border:1px solid var(--line);border-radius:16px;padding:16px 18px;background:var(--panel);min-width:0}
-.pc .k{font-size:12px;color:var(--muted)}.pc .v{font-size:26px;font-weight:300;letter-spacing:-.5px;margin-top:2px}
-.pc .s{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.zbar{display:flex;height:10px;border-radius:99px;overflow:hidden;margin:12px 0 10px;background:var(--line)}.zbar i{display:block}
-.zleg{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}.zleg b{color:var(--fg);font-weight:600}
-@media(max-width:1100px){.pulse{grid-template-columns:1fr 1fr}.pulse .pc:first-child{grid-column:1/-1}}
 
 /* Diseño Pro: barra lateral oscura y área de trabajo gris claro */
 [data-v=c]{--bg:#f2f7f8;--line:#e1e9eb;--accent:#0097b2;--brand:#0097b2;--brand-d:#007a90}
@@ -110,10 +103,21 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 [data-v=c] main .hero{padding:22px}}
 [data-v=c] .hero{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px;margin-bottom:20px}
 [data-v=c] .opps{box-shadow:none;background:#f3fafb;border-color:#d4eef3}
-[data-v=c] .pc,[data-v=c] .wrap{background:#fff}
+[data-v=c] .wrap{background:#fff}
 [data-v=c] .tools{background:#fff;border:1px solid var(--line)}
-[data-v=c] .pc{border-top:3px solid var(--brand)}[data-v=c] .pc:nth-child(2),[data-v=c] .pc:nth-child(3){border-top-color:#16a34a}[data-v=c] .pc:nth-child(4){border-top-color:#dc2626}
 .bar .right{margin-left:auto}@media(max-width:640px){.bar .right{margin-left:0}}
+/* Cinta de mercados (índices, materias primas, bonos, divisas, cripto) */
+.mk{margin-bottom:22px}
+.mtabs{display:flex;gap:22px;align-items:center;border-bottom:1px solid var(--line);margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.mtabs button{border:none;background:none;font:inherit;font-weight:700;font-size:13px;letter-spacing:.5px;color:var(--muted);padding:8px 0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.mtabs button.on{color:var(--brand,#111);border-bottom-color:var(--brand,#111)}
+.mcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.mc{border-radius:6px;padding:10px 12px;color:#fff;background:#6b7280;cursor:default;min-height:82px}
+.mc.up{background:#15803d}.mc.down{background:#d32f2f}
+.mc .r1,.mc .r2{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-weight:700}
+.mc .r1 b{font-size:13px;letter-spacing:.3px}.mc .r1 span{font-size:14px;font-variant-numeric:tabular-nums}
+.mc .r2{font-size:13px;margin-top:4px;font-variant-numeric:tabular-nums}.mc .r2 span{display:flex;gap:10px}
+.mc .r3{font-size:10px;font-weight:600;opacity:.85;margin-top:8px;letter-spacing:.3px;text-transform:uppercase}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
@@ -128,7 +132,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
   </div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde · mejor score</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
  </div>
- <div class="pulse" id="pulse"></div>
+ <div class="mk"><div class="mtabs" id="mtabs"></div><div class="mcards" id="mcards"></div></div>
  <div class="tools" id="tools">
  <div class="bar">
   <select id="lst" aria-label="Lista de valores"></select>
@@ -269,22 +273,34 @@ function renderPort(){
  bind($('#tport'));$('#tport').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.portfolio=ST.portfolio.filter(p=>p.symbol!==b.dataset.rm);save();renderPort()});
  const favRows=ST.favs.map(s=>DATA[s]||{symbol:s});
  $('#tfav').innerHTML=head()+'<tbody>'+(favRows.length?sortRows(favRows).map(row).join(''):'<tr><td colspan="12" class="l mut">Pulsa ☆ junto a cualquier valor del mercado para guardarlo aquí.</td></tr>')+'</tbody>';bind($('#tfav'))}
-function renderPulse(){const xs=listSyms().map(s=>DATA[s]).filter(x=>x&&!x.error&&x.price!=null);const n=xs.length;
- const c={green:0,yellow:0,red:0};xs.forEach(x=>{if(c[x.zone]!=null)c[x.zone]++});
- const by=xs.filter(x=>x.change_pct!=null).sort((a,b)=>b.change_pct-a.change_pct),up=by[0],dn=by[by.length-1];
- const avg=n?xs.reduce((a,x)=>a+(x.rsi||0),0)/n:null,pc=k=>n?c[k]/n*100:0;
- $('#pulse').innerHTML=`<div class="pc"><div class="k">Estado de la lista · ${n} valores</div><div class="zbar"><i style="width:${pc('green')}%;background:var(--z-green)"></i><i style="width:${pc('yellow')}%;background:var(--z-yellow)"></i><i style="width:${pc('red')}%;background:var(--z-red)"></i></div><div class="zleg"><span><b>${c.green}</b> comprar</span><span><b>${c.yellow}</b> zona de compra</span><span><b>${c.red}</b> no comprar</span></div></div>
- <div class="pc"><div class="k">En zona verde</div><div class="v">${c.green}</div><div class="s">${n?f(pc('green'),0):'—'} % de la lista</div></div>
- <div class="pc"><div class="k">Mayor subida hoy</div><div class="v">${up?sg(up.change_pct):'—'}</div><div class="s">${up?esc(up.symbol+' · '+up.name):''}</div></div>
- <div class="pc"><div class="k">Mayor bajada hoy</div><div class="v">${dn?sg(dn.change_pct):'—'}</div><div class="s">${dn?esc(dn.symbol+' · '+dn.name):''}</div></div>
- <div class="pc"><div class="k">RSI medio</div><div class="v">${avg==null?'—':f(avg,1)}</div><div class="s">${avg==null?'':avg>70?'mercado sobrecomprado':avg<30?'mercado sobrevendido':'mercado en zona neutral'}</div></div>`}
+// Cinta de mercados: pestañas como en CNBC, datos de Yahoo vía /api/quotes
+const MKTS=[
+ ['EE. UU.',[['^DJI','Dow Jones'],['^GSPC','S&P 500'],['^IXIC','Nasdaq'],['^NDX','Nasdaq 100'],['^RUT','Russell 2000']]],
+ ['Europa',[['^IBEX','IBEX 35'],['^STOXX50E','Euro Stoxx 50'],['^GDAXI','DAX'],['^FCHI','CAC 40'],['^FTSE','FTSE 100']]],
+ ['Asia',[['^N225','Nikkei 225'],['^HSI','Hang Seng'],['000001.SS','Shanghai'],['^KS11','Kospi'],['^AXJO','ASX 200']]],
+ ['Petróleo',[['CL=F','WTI'],['BZ=F','Brent'],['NG=F','Gas natural'],['RB=F','Gasolina']]],
+ ['Bonos',[['^IRX','EE. UU. 3 meses'],['^FVX','EE. UU. 5 años'],['^TNX','EE. UU. 10 años'],['^TYX','EE. UU. 30 años']]],
+ ['Oro',[['GC=F','Oro'],['SI=F','Plata'],['PL=F','Platino'],['HG=F','Cobre']]],
+ ['Divisas',[['EURUSD=X','EUR/USD'],['JPY=X','USD/JPY'],['GBPUSD=X','GBP/USD'],['DX-Y.NYB','Índice dólar'],['MXN=X','USD/MXN']]],
+ ['Cripto',[['BTC-USD','Bitcoin'],['ETH-USD','Ethereum'],['SOL-USD','Solana'],['XRP-USD','XRP']]],
+ ['Futuros',[['YM=F','Dow futuros'],['ES=F','S&P 500 futuros'],['NQ=F','Nasdaq 100 futuros'],['RTY=F','Russell futuros']]]];
+let mTab=0;try{mTab=+localStorage.getItem('bs-mtab')||0}catch(e){}if(!MKTS[mTab])mTab=0;
+const MQ={};
+function renderMkt(){$('#mtabs').innerHTML=MKTS.map((m,i)=>`<button data-m="${i}" class="${i===mTab?'on':''}">${m[0].toUpperCase()}</button>`).join('');
+ $('#mtabs').querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mTab=+b.dataset.m;try{localStorage.setItem('bs-mtab',mTab)}catch(e){}renderMkt();loadMkt()});
+ const bond=MKTS[mTab][0]==='Bonos',d=MKTS[mTab][1].some(([s])=>/=X$/.test(s))?4:2;
+ $('#mcards').innerHTML=MKTS[mTab][1].map(([s,n])=>{const q=MQ[s];if(!q)return `<div class="mc"><div class="r1"><b>${esc(n)}</b><span>…</span></div></div>`;
+  if(q.error||q.price==null)return `<div class="mc"><div class="r1"><b>${esc(n)}</b><span>—</span></div><div class="r3">Sin datos</div></div>`;
+  const up=q.change>=0,t=q.time?new Date(q.time*1000).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}):'';
+  return `<div class="mc ${up?'up':'down'}"><div class="r1"><b>${esc(n)}</b><span>${f(q.price,/=X$/.test(s)?4:2)}${bond?'%':''}</span></div><div class="r2"><span>${up?'▲':'▼'}</span><span>${up?'+':''}${f(q.change,/=X$/.test(s)?4:2)} <span>${up?'+':''}${f(q.change_pct)}%</span></span></div><div class="r3">Último · ${t}${q.open===false?' · cerrado':''}</div></div>`}).join('')}
+async function loadMkt(){const syms=MKTS[mTab][1].map(x=>x[0]);try{const r=await api('/api/quotes?symbols='+encodeURIComponent(syms.join(',')));r.forEach(q=>MQ[q.symbol]=q)}catch(e){}renderMkt()}
 function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=null&&x.score!=null);
  let pick=xs.filter(x=>x.zone==='green');if(pick.length<3)pick=pick.concat(xs.filter(x=>x.zone==='yellow'));
  pick=pick.sort((a,b)=>b.score-a.score).slice(0,4);
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
-function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps();renderPulse()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
+function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderAll()}
@@ -326,9 +342,11 @@ function drawChart(h){const W=900,H1=300,H2=110,P=48,n=h.close.length;const all=
  $('#ch').innerHTML=`<svg viewBox="0 0 ${W} ${H1+H2+18}" width="100%" role="img" aria-label="Precio, medias móviles y RSI">${g}${line(h.sma200,'var(--m200)',1.6)}${line(h.sma100,'var(--m100)',1.4,'6 4')}${line(h.sma50,'var(--m50)',1.4,'2 3')}${line(h.sma20,'var(--m20)',1.2,'8 3 2 3')}${line(h.close,'var(--fg)',2)}
  <circle cx="${X(n-1)}" cy="${Y(h.close[n-1])}" r="3.5" fill="var(--fg)"/><text x="${P}" y="${H1+10}">RSI 14</text><path d="${rd}" fill="none" stroke="var(--fg)" stroke-width="1.4"/>${months.join('')}</svg>`}
 // Actualización automática: cada 30 s refresca lo que estás viendo
+setInterval(()=>{if(!document.hidden&&!$('#scan').hidden)loadMkt()},30000);
 let lastBig=0;setInterval(()=>{if(document.hidden||loading)return;const syms=visibleSyms();if(!syms.length)return;
  // Las listas grandes (S&P 500) se refrescan cada 90 s para no saturar la fuente de datos
  if(syms.length>120){if(Date.now()-lastBig<90000)return;lastBig=Date.now()}load(syms,false)},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!loading)load(visibleSyms(),false)});
+renderMkt();loadMkt();
 load(listSyms(),true);
 </script></body></html>
