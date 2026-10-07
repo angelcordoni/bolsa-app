@@ -1,4 +1,4 @@
-# Bolsa App
+# Bag Scanner
 
 Escáner de acciones y ETFs con medias móviles (20, 50, 100, 200), RSI(14), score de compra (0-100) y gestión de cartera. Datos de Yahoo Finance.
 

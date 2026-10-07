@@ -1,34 +1,38 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-capable" content="yes">
-<title>Bolsa App</title>
+<meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-title" content="Bag Scanner"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>Bag Scanner</title>
+<meta name="description" content="Escanea más de 600 acciones y ETFs en vivo y descubre con un color cuándo comprar.">
+<link rel="icon" href="logo.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /* Blanco y negro: el único color es la zona del precio y el signo +/- */
-:root{--bg:#ffffff;--panel:#ffffff;--fg:#111111;--muted:#555555;--line:#e3e3e3;--accent:#111111;
+:root{--bg:#ffffff;--panel:#ffffff;--fg:#111111;--muted:#555555;--line:#ececec;--accent:#111111;
 --up:#15803d;--down:#dc2626;--warn:#111111;--m20:#111111;--m50:#555555;--m100:#888888;--m200:#bbbbbb;
 --z-green:#15803d;--z-yellow:#a16207;--z-red:#dc2626;--zb-green:#dcfce7;--zb-yellow:#fef3c7;--zb-red:#fee2e2;
---mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--sans)}
-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
-h1{font-size:18px;margin:0;letter-spacing:.2px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px max(20px,calc((100% - 1360px)/2));border-bottom:1px solid var(--line);background:rgba(255,255,255,.88);backdrop-filter:saturate(1.6) blur(12px);-webkit-backdrop-filter:saturate(1.6) blur(12px);position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;letter-spacing:-.3px;margin:0}.brand span{font-weight:500;color:var(--muted)}.logo{width:32px;height:32px;display:block;flex:none}
+.hr{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .live{font-size:12px;font-weight:400;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}.dot.on{background:var(--fg);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}@media (prefers-reduced-motion:reduce){.dot.on{animation:none}}
-nav{display:flex;gap:4px}nav button{border:1px solid var(--line);background:transparent;color:var(--fg);padding:7px 14px;border-radius:6px;cursor:pointer;font:inherit}
-nav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
-main{padding:18px 20px;max-width:1400px;margin:0 auto}
+nav{display:flex;gap:2px;background:#f3f3f3;padding:3px;border-radius:999px}nav button{border:none;background:transparent;color:var(--muted);padding:7px 16px;border-radius:999px;cursor:pointer;font:inherit;font-weight:600}
+nav button.on{background:#fff;color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+main{padding:28px 20px 40px;max-width:1400px;margin:0 auto}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-input,select{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--fg)}
-button.b{font:inherit;padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+input,select{font:inherit;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg)}
+button.b{font:inherit;font-weight:600;padding:9px 16px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
 button.b.p{background:var(--accent);border-color:var(--accent);color:#fff}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-.wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
-th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;cursor:pointer;user-select:none;background:var(--panel)}
-td.l,th.l{text-align:left}tr:hover td{background:#f6f6f6}
+th,td{padding:12px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#8a8a8a;font-weight:600;cursor:pointer;user-select:none;background:var(--panel)}
+td.l,th.l{text-align:left}tbody tr:last-child td{border-bottom:none}tr:hover td{background:#fafafa}
 td.star,th.star{width:34px;text-align:center;padding-right:0}
-.sym{font-weight:700;font-family:var(--mono);cursor:pointer;color:var(--fg);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}.nm{color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.sym{font-weight:700;cursor:pointer;color:var(--fg)}.sym:hover{text-decoration:underline;text-underline-offset:3px}.nm{color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
 .up{color:var(--up)}.down{color:var(--down)}.mut{color:var(--muted)}
 .zp{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700}
 .zp.z-green{background:var(--zb-green);color:var(--z-green)}
@@ -47,14 +51,14 @@ td.star,th.star{width:34px;text-align:center;padding-right:0}
 .fav{border:none;background:none;cursor:pointer;font-size:18px;line-height:1;color:var(--muted);padding:2px}.fav.on{color:var(--fg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin:0 0 10px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}.card .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.card .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}.card .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.card .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
 h2{font-size:15px;margin:22px 0 10px}
 .grid2{display:grid;grid-template-columns:2fr 1fr;gap:14px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
 .lg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:6px}.lg i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px}
 svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
 .bd{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13px}.meter{grid-column:1/-1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:6px}.meter span{display:block;height:100%;background:var(--accent)}
-.guide{margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:8px;max-width:900px;line-height:1.6}
+.guide{margin-top:28px;padding:28px;border:1px solid var(--line);border-radius:14px;max-width:900px;line-height:1.6}
 .guide h2{margin-top:0;font-size:18px}.guide h3{font-size:15px;margin:22px 0 8px}.guide .lead{font-size:15px}
 .guide dl{display:grid;grid-template-columns:180px 1fr;gap:10px 18px;margin:0}.guide dt{font-weight:700}.guide dd{margin:0}
 @media(max-width:640px){.guide dl{grid-template-columns:1fr;gap:2px}.guide dd{margin-bottom:10px}}
@@ -63,19 +67,45 @@ svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
 .err{color:var(--down)}.x{border:none;background:none;color:var(--muted);cursor:pointer;font-size:16px}
 #sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}
 .prog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:10px}.prog span{display:block;height:100%;background:var(--accent);transition:width .3s}
-@media(max-width:640px){header{padding:12px 14px}main{padding:14px}nav{width:100%}nav button{flex:1}.bar input,.bar select{flex:1 1 100%;min-width:0;width:100%}}
+@media(max-width:640px){header{padding:10px 14px}.hr{width:100%}main{padding:14px}nav{width:100%}nav button{flex:1;padding:8px 6px}.bar input,.bar select{flex:1 1 100%;min-width:0;width:100%}}
+.hero{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.hero h2{font-size:clamp(32px,5vw,54px);line-height:1.04;letter-spacing:-1.8px;font-weight:800;margin:0 0 16px}
+.hero h2 em{font-style:normal;color:var(--z-green)}.hero h2 em.r{color:var(--z-red)}
+.hero p{font-size:17px;color:var(--muted);max-width:52ch;margin:0 0 24px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}.cta .b{padding:12px 22px;font-size:15px;border-radius:999px}
+.stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}.stats b{display:block;font-size:22px;letter-spacing:-.5px}.stats span{font-size:12px;color:var(--muted)}
+.opps{border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 50px -24px rgba(0,0,0,.18)}
+.opps .t{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;font-weight:700}.opps .t span{font-size:12px;font-weight:500;color:var(--muted)}
+.opp{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer}.opp:hover{background:#fafafa}
+.opp .n{flex:1;min-width:0}.opp .n b{display:block}.opp .n div{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
+.tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
+@media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
 </style></head><body>
-<header><h1>Bolsa App <span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span></h1>
-<nav><button data-t="scan" class="on">Mercado</button><button data-t="port">Mi cartera</button><button data-t="det">Detalle</button></nav></header>
+<header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
+<div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
+<nav><button data-t="scan" class="on">Mercado</button><button data-t="port">Mi cartera</button><button data-t="det">Detalle</button></nav></div></header>
 <main>
 <section id="scan">
+ <div class="hero">
+  <div>
+   <h2>Compra en <em>verde</em>.<br>Espera en <em class="r">rojo</em>.</h2>
+   <p>Bag Scanner revisa en vivo cientos de acciones y ETFs, calcula sus medias móviles y su RSI y te dice con un solo color si es momento de comprar.</p>
+   <div class="cta"><button class="b p" id="go-scan">Escanear el mercado</button><button class="b" id="go-guide">Cómo funciona</button></div>
+   <div class="stats"><div><b id="st-n">600+</b><span>acciones y ETFs</span></div><div><b>30 s</b><span>precios en vivo</span></div><div><b>0–100</b><span>score de compra</span></div></div>
+  </div>
+  <div class="opps"><div class="t">Oportunidades ahora <span>zona verde · mejor score</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
+ </div>
+ <div class="tools" id="tools">
  <div class="bar">
   <select id="lst" aria-label="Lista de valores"></select>
   <input id="flttxt" placeholder="Filtrar por nombre o símbolo" size="24">
   <select id="ftype" aria-label="Tipo"><option value="all">Acciones y ETFs</option><option value="EQUITY">Solo acciones</option><option value="ETF">Solo ETFs</option></select>
   <select id="flt" aria-label="Filtro"><option value="all">Todos</option><option value="green">Verde: bajo MM100</option><option value="yellow">Amarillo: bajo MM20</option><option value="red">Rojo: sobre MM20</option><option value="fav">Score ≥ 70</option><option value="os">RSI &lt; 30</option><option value="ob">RSI &gt; 70</option></select>
  </div>
+ </div>
  <div class="bar"><input id="q" placeholder="Buscar cualquier empresa o ETF (ej. Inditex, Tesla, VWCE)" size="40"><button class="b p" id="srch">Buscar</button><span id="st" class="mut"></span></div>
+ </div>
  <div id="sugs"></div>
  <div class="prog" id="prog" hidden><span id="progbar"></span></div>
  <div class="legend"><span><i style="background:var(--z-green)"></i>Verde: bajo la MM100 · Comprar</span><span><i style="background:var(--z-yellow)"></i>Amarillo: bajo la MM20 · Zona de compra</span><span><i style="background:var(--z-red)"></i>Rojo: sobre la MM20 · No comprar</span><span>★ guarda en favoritos</span></div>
@@ -94,7 +124,7 @@ svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
  <div class="bar"><input id="ds" placeholder="Símbolo" size="12"><button class="b p" id="dgo">Ver</button></div>
  <div id="dout" class="mut">Pulsa un símbolo en el mercado o en tu cartera para ver su gráfico.</div>
 <article class="guide" id="guide">
- <h2>Guía: cómo usar la Bolsa App</h2>
+ <h2>Guía: cómo usar Bag Scanner</h2>
  <p class="lead">Esta app revisa acciones y ETFs con datos de Yahoo Finance, calcula sus medias móviles y su RSI, les da una nota de 0 a 100 y te dice, con el color del precio, si están en zona de compra.</p>
  <h3>Las tres secciones</h3>
  <dl>
@@ -201,7 +231,11 @@ function renderPort(){
  bind($('#tport'));$('#tport').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.portfolio=ST.portfolio.filter(p=>p.symbol!==b.dataset.rm);save();renderPort()});
  const favRows=ST.favs.map(s=>DATA[s]||{symbol:s});
  $('#tfav').innerHTML=head()+'<tbody>'+(favRows.length?sortRows(favRows).map(row).join(''):'<tr><td colspan="12" class="l mut">Pulsa ☆ junto a cualquier valor del mercado para guardarlo aquí.</td></tr>')+'</tbody>';bind($('#tfav'))}
-function renderAll(){if(!$('#scan').hidden)renderScan();if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
+function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=null&&x.score!=null);
+ let pick=xs.filter(x=>x.zone==='green');if(pick.length<3)pick=pick.concat(xs.filter(x=>x.zone==='yellow'));
+ pick=pick.sort((a,b)=>b.score-a.score).slice(0,4);
+ $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
+function renderAll(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderScan()}
@@ -213,7 +247,10 @@ async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').i
  $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>detail(b.dataset.d));
  $('#sugs').querySelectorAll('[data-sf]').forEach(b=>b.onclick=()=>{toggleFav(b.dataset.sf);b.classList.toggle('on');b.textContent=isFav(b.dataset.sf)?'★':'☆';if(!DATA[b.dataset.sf])load([b.dataset.sf],false)})}
  catch(e){$('#sugs').innerHTML='<span class="err">No se pudo buscar: '+esc(e.message)+'</span>'}}
-$('#srch').onclick=doSearch;$('#q').onkeydown=e=>{if(e.key==='Enter')doSearch()};
+$('#srch').onclick=doSearch;
+$('#go-scan').onclick=()=>$('#tools').scrollIntoView({behavior:'smooth'});
+$('#go-guide').onclick=()=>{tab('det');$('#guide').scrollIntoView({behavior:'smooth'})};
+{const t=LISTS.find(l=>l.id==='todo');if(t)$('#st-n').textContent=t.symbols.length}$('#q').onkeydown=e=>{if(e.key==='Enter')doSearch()};
 $('#padd').onclick=()=>{const s=$('#ps').value.trim().toUpperCase(),n=parseFloat($('#pn').value),c=parseFloat($('#pc').value);if(!s||!(n>0)||!(c>0))return;
  ST.portfolio=ST.portfolio.filter(p=>p.symbol!==s).concat([{symbol:s,shares:n,cost:c}]);save();['#ps','#pn','#pc'].forEach(i=>$(i).value='');renderPort();if(!DATA[s])load([s],false)};
 $('#dgo').onclick=()=>detail($('#ds').value);$('#ds').onkeydown=e=>{if(e.key==='Enter')detail($('#ds').value)};
