@@ -128,7 +128,6 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
   <div>
    <h2>Compra en <em>verde</em>.<br>Espera en <em class="r">rojo</em>.</h2>
    <p>Bag Scanner revisa en vivo cientos de acciones y ETFs, calcula sus medias móviles y su RSI y te dice con un solo color si es momento de comprar.</p>
-   <div class="stats"><div><b id="st-n">600+</b><span>acciones y ETFs</span></div><div><b>30 s</b><span>precios en vivo</span></div><div><b>0–100</b><span>score de compra</span></div></div>
   </div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde · mejor score</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
  </div>
@@ -315,7 +314,7 @@ async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').i
  $('#sugs').querySelectorAll('[data-sf]').forEach(b=>b.onclick=()=>{toggleFav(b.dataset.sf);b.classList.toggle('on');b.textContent=isFav(b.dataset.sf)?'★':'☆';if(!DATA[b.dataset.sf])load([b.dataset.sf],false)})}
  catch(e){$('#sugs').innerHTML='<span class="err">No se pudo buscar: '+esc(e.message)+'</span>'}}
 $('#srch').onclick=doSearch;
-{const t=LISTS.find(l=>l.id==='todo');if(t)$('#st-n').textContent=t.symbols.length}$('#q').onkeydown=e=>{if(e.key==='Enter')doSearch()};
+$('#q').onkeydown=e=>{if(e.key==='Enter')doSearch()};
 $('#padd').onclick=()=>{const s=$('#ps').value.trim().toUpperCase(),n=parseFloat($('#pn').value),c=parseFloat($('#pc').value);if(!s||!(n>0)||!(c>0))return;
  ST.portfolio=ST.portfolio.filter(p=>p.symbol!==s).concat([{symbol:s,shares:n,cost:c}]);save();['#ps','#pn','#pc'].forEach(i=>$(i).value='');renderPort();if(!DATA[s])load([s],false)};
 $('#dgo').onclick=()=>detail($('#ds').value);$('#ds').onkeydown=e=>{if(e.key==='Enter')detail($('#ds').value)};
