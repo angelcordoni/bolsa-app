@@ -9,7 +9,9 @@ etfs = """SPY VOO IVV VTI QQQ QQQM DIA IWM VT VEA VWO EFA EEM IEFA IEMG VUG VTV 
 populares = """SPY QQQ VOO VTI IWM DIA VT GLD XLE XLF AAPL MSFT NVDA AMZN GOOGL META TSLA AVGO JPM V MA KO PEP JNJ PG XOM WMT COST SAN.MC ITX.MC IBE.MC BBVA.MC""".split()
 def uniq(xs):
     seen = set(); return [x for x in xs if not (x in seen or seen.add(x))]
+todo = uniq(populares + sp500 + nasdaq100 + dow30 + ibex35 + etfs)
 lists = [
+    {"id": "todo", "name": "Todo el mercado", "symbols": todo},
     {"id": "populares", "name": "Populares", "symbols": uniq(populares)},
     {"id": "sp500", "name": "S&P 500", "symbols": uniq(sp500)},
     {"id": "nasdaq100", "name": "Nasdaq 100", "symbols": uniq(nasdaq100)},
