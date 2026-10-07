@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es" data-v="c"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-title" content="Bag Scanner"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0097b2"><meta name="apple-mobile-web-app-title" content="Bag Scanner"><meta name="apple-mobile-web-app-capable" content="yes">
 <title>Bag Scanner</title>
 <meta name="description" content="Escanea más de 600 acciones y ETFs en vivo y descubre con un color cuándo comprar.">
 <link rel="icon" href="logo.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="logo.svg">
@@ -92,30 +92,27 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .zleg{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}.zleg b{color:var(--fg);font-weight:600}
 @media(max-width:1100px){.pulse{grid-template-columns:1fr 1fr}.pulse .pc:first-child{grid-column:1/-1}}
 
-
---up:#22c55e;--down:#f43f5e;--z-green:#4ade80;--z-yellow:#facc15;--z-red:#fb7185;--zb-green:rgba(34,197,94,.14);--zb-yellow:rgba(250,204,21,.14);--zb-red:rgba(244,63,94,.15);
---m20:#e8edf7;--m50:#a5b0c8;--m100:#6b7690;--m200:#46506a;color-scheme:dark}
-
 /* Diseño Pro: barra lateral oscura y área de trabajo gris claro */
-[data-v=c]{--bg:#f3f4f7;--line:#e4e6eb}
+[data-v=c]{--bg:#f2f7f8;--line:#e1e9eb;--accent:#0097b2;--brand:#0097b2;--brand-d:#007a90}
+[data-v=c] .s-hi{background:var(--brand);border-color:var(--brand)}
 @media(min-width:1000px){
-[data-v=c] header{position:fixed;left:0;top:0;bottom:0;width:240px;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:28px;padding:22px 16px;background:#0f172a;border:none;color:#fff;backdrop-filter:none}
-[data-v=c] .brand span{color:#94a3b8}[data-v=c] .hr{flex-direction:column-reverse;align-items:stretch;gap:20px}
+[data-v=c] header{position:fixed;left:0;top:0;bottom:0;width:240px;flex-direction:column;align-items:stretch;justify-content:flex-start;gap:28px;padding:22px 16px;background:var(--brand);border:none;color:#fff;backdrop-filter:none}
+[data-v=c] .brand span{color:#d7f3f8}[data-v=c] .hr{flex-direction:column-reverse;align-items:stretch;gap:20px}
 [data-v=c] nav{flex-direction:column;background:none;padding:0;gap:4px}
-[data-v=c] nav button{text-align:left;color:#cbd5e1;border-radius:10px;padding:10px 14px}
-[data-v=c] nav button.on{background:#1e293b;color:#fff;box-shadow:inset 3px 0 0 #22c55e}
-[data-v=c] .live{color:#94a3b8;padding:0 14px}[data-v=c] .dot.on{background:#22c55e}
+[data-v=c] nav button{text-align:left;color:#e6f7fa;border-radius:10px;padding:10px 14px}
+[data-v=c] nav button.on{background:var(--brand-d);color:#fff;box-shadow:inset 3px 0 0 #fff}
+[data-v=c] .live{color:#d7f3f8;padding:0 14px}[data-v=c] .dot{background:#d7f3f8}[data-v=c] .dot.on{background:#fff}
 [data-v=c] main{margin-left:240px;max-width:none;padding:28px 32px 40px}
 [data-v=c] .note{margin-left:0}}
 @media(max-width:999px){
-[data-v=c] header{background:#0f172a;border:none;color:#fff;backdrop-filter:none}[data-v=c] .brand span,[data-v=c] .live{color:#94a3b8}[data-v=c] .dot.on{background:#22c55e}
-[data-v=c] nav{background:#1e293b}[data-v=c] nav button{color:#cbd5e1}[data-v=c] nav button.on{background:#fff;color:#0f172a}
+[data-v=c] header{background:var(--brand);border:none;color:#fff;backdrop-filter:none}[data-v=c] .brand span,[data-v=c] .live{color:#d7f3f8}[data-v=c] .dot.on{background:#fff}
+[data-v=c] nav{background:var(--brand-d)}[data-v=c] nav button{color:#e6f7fa}[data-v=c] nav button.on{background:#fff;color:var(--brand-d)}
 [data-v=c] main .hero{padding:22px}}
 [data-v=c] .hero{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px;margin-bottom:20px}
-[data-v=c] .opps{box-shadow:none;background:#f8fafc}
+[data-v=c] .opps{box-shadow:none;background:#f3fafb;border-color:#d4eef3}
 [data-v=c] .pc,[data-v=c] .wrap{background:#fff}
 [data-v=c] .tools{background:#fff;border:1px solid var(--line)}
-[data-v=c] .pc{border-top:3px solid #0f172a}[data-v=c] .pc:nth-child(2),[data-v=c] .pc:nth-child(3){border-top-color:#16a34a}[data-v=c] .pc:nth-child(4){border-top-color:#dc2626}
+[data-v=c] .pc{border-top:3px solid var(--brand)}[data-v=c] .pc:nth-child(2),[data-v=c] .pc:nth-child(3){border-top-color:#16a34a}[data-v=c] .pc:nth-child(4){border-top-color:#dc2626}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
