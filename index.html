@@ -113,6 +113,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 [data-v=c] .pc,[data-v=c] .wrap{background:#fff}
 [data-v=c] .tools{background:#fff;border:1px solid var(--line)}
 [data-v=c] .pc{border-top:3px solid var(--brand)}[data-v=c] .pc:nth-child(2),[data-v=c] .pc:nth-child(3){border-top-color:#16a34a}[data-v=c] .pc:nth-child(4){border-top-color:#dc2626}
+.bar .right{margin-left:auto}@media(max-width:640px){.bar .right{margin-left:0}}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
@@ -132,8 +133,8 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
  <div class="tools" id="tools">
  <div class="bar">
   <select id="lst" aria-label="Lista de valores"></select>
-  <input id="flttxt" placeholder="Filtrar por nombre o símbolo" size="24">
   <select id="flt" aria-label="Filtro"><option value="all">Todos</option><option value="green">Verde: bajo MM100</option><option value="yellow">Amarillo: bajo MM20</option><option value="red">Rojo: sobre MM20</option><option value="fav">Score ≥ 70</option><option value="os">RSI &lt; 30</option><option value="ob">RSI &gt; 70</option></select>
+  <input id="flttxt" class="right" placeholder="Filtrar por nombre o símbolo" size="24">
  </div>
  </div>
  <div class="bar"><input id="q" placeholder="Buscar cualquier empresa o ETF (ej. Inditex, Tesla, VWCE)" size="40"><button class="b p" id="srch">Buscar</button><span id="st" class="mut"></span></div>
@@ -217,7 +218,7 @@ const zoneTxt={green:'Bajo MM100',yellow:'Bajo MM20',red:'Sobre MM20'};
 const isFav=s=>ST.favs.includes(s);
 // Cambia la estrella en el sitio, sin repintar las tablas enteras
 function toggleFav(s){ST.favs=isFav(s)?ST.favs.filter(x=>x!==s):ST.favs.concat([s]);save();const on=isFav(s);
- document.querySelectorAll('[data-fav]').forEach(b=>{if(b.dataset.fav===s){b.classList.toggle('on',on);b.textContent=on?'★':'☆'}});if(!$('#port').hidden)renderAll()}
+ document.querySelectorAll('[data-fav]').forEach(b=>{if(b.dataset.fav===s){b.classList.toggle('on',on);b.textContent=on?'★':'☆'}});if(!$('#port').hidden||curList==='favs')renderAll();fillLists()}
 async function api(p){const r=await fetch(p);const j=await r.json();if(!r.ok)throw new Error(j.error||r.status);return j}
 async function fetchSymbols(syms,onProgress){
  const chunks=[];for(let i=0;i<syms.length;i+=25)chunks.push(syms.slice(i,i+25));
@@ -225,7 +226,7 @@ async function fetchSymbols(syms,onProgress){
  async function worker(){while(idx<chunks.length){const c=chunks[idx++];try{const r=await api('/api/analyze?symbols='+encodeURIComponent(c.join(',')));r.forEach(x=>{const old=DATA[x.symbol];x._chg=old&&old.price!=null&&x.price!==old.price;if(x.error&&old&&!old.error)return;DATA[x.symbol]=x})}catch(e){c.forEach(s=>{if(!DATA[s])DATA[s]={symbol:s,error:e.message}})}done+=c.length;onProgress&&onProgress(done,syms.length)}}
  await Promise.all([worker(),worker(),worker(),worker()]);
 }
-function listSyms(){const l=LISTS.find(x=>x.id===curList)||LISTS[0];return l?l.symbols:[]}
+function listSyms(){if(curList==='favs')return ST.favs.slice();const l=LISTS.find(x=>x.id===curList)||LISTS[0];return l?l.symbols:[]}
 function visibleSyms(){const t=$('#port').hidden?($('#det').hidden?listSyms():[$('#ds').value.trim().toUpperCase()].filter(Boolean)):[...new Set(ST.favs.concat(ST.portfolio.map(p=>p.symbol)))];return t}
 function setLive(){const xs=Object.values(DATA).filter(x=>!x.error);const open=xs.some(x=>x.open);$('#dot').classList.toggle('on',open);
  $('#upd').textContent=(open?'En vivo':'Mercado cerrado')+' · '+new Date().toLocaleTimeString('es-ES')}
@@ -257,7 +258,7 @@ const fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
   if(['green','yellow','red'].includes(fl))return x.zone===fl;if(fl==='fav')return x.score>=70;if(fl==='os')return x.rsi<30;if(fl==='ob')return x.rsi>70;return true});
  // Solo se pintan las primeras filas: pintar las 600 de golpe bloquea la página medio segundo
  const all=sortRows(rows),vis=all.slice(0,shown),rest=all.length-vis.length;
- $('#tscan').innerHTML=head()+'<tbody>'+vis.map(row).join('')+(rows.length?'':'<tr><td colspan="12" class="l mut">Ningún valor cumple el filtro.</td></tr>')+(rest>0?`<tr><td colspan="12" class="more"><button class="b" id="more">Mostrar ${Math.min(rest,PAGE)} más · quedan ${rest}</button></td></tr>`:'')+'</tbody>';bind($('#tscan'));
+ $('#tscan').innerHTML=head()+'<tbody>'+vis.map(row).join('')+(rows.length?'':`<tr><td colspan="12" class="l mut">${curList==='favs'&&!ST.favs.length?'Aún no tienes favoritos. Pulsa ☆ junto a cualquier valor para guardarlo aquí.':'Ningún valor cumple el filtro.'}</td></tr>`)+(rest>0?`<tr><td colspan="12" class="more"><button class="b" id="more">Mostrar ${Math.min(rest,PAGE)} más · quedan ${rest}</button></td></tr>`:'')+'</tbody>';bind($('#tscan'));
  if(rest>0)$('#more').onclick=()=>{shown+=PAGE;renderScan()}}
 function renderPort(){
  const P=ST.portfolio;let tv={},tc={};
@@ -288,7 +289,9 @@ function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps();renderPuls
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderAll()}
-$('#lst').innerHTML=LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=curList;
+// "Mis favoritos" sale de las estrellas que marca cada persona en su navegador
+function fillLists(){const v=$('#lst').value||curList;$('#lst').innerHTML=`<option value="favs">★ Mis favoritos (${ST.favs.length})</option>`+LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=v}
+fillLists();$('#lst').value=curList;
 $('#lst').onchange=()=>{curList=$('#lst').value;shown=PAGE;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
 const refilter=()=>{shown=PAGE;renderAll()};$('#flt').onchange=refilter;$('#flttxt').oninput=refilter;
 async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
