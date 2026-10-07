@@ -29,7 +29,7 @@ button.b.p{background:var(--accent);border-color:var(--accent);color:#fff}button
 .wrap{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 th,td{padding:12px 12px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#8a8a8a;font-weight:600;cursor:pointer;user-select:none;background:var(--panel)}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:#000;font-weight:800;cursor:pointer;user-select:none;background:var(--panel)}
 td.l,th.l{text-align:left}tbody tr:last-child td{border-bottom:none}tr:hover td{background:#fafafa}
 td.star,th.star{width:34px;text-align:center;padding-right:0}
 .sym{font-weight:600;cursor:pointer;color:var(--fg)}.sym:hover{text-decoration:underline;text-underline-offset:3px}.nm{color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
@@ -37,7 +37,7 @@ td.star,th.star{width:34px;text-align:center;padding-right:0}
 .zp{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700}
 .zp.z-green{background:var(--zb-green);color:var(--z-green)}
 .zp.z-yellow{background:var(--zb-yellow);color:var(--z-yellow)}
-.zp.z-red{background:var(--zb-red);color:var(--z-red)}
+.zp.z-red{background:#fca5a5;color:#991b1b}
 .za{font-size:11px;font-weight:600;margin-top:3px;color:var(--fg)}
 .flash{animation:flash 1s}@keyframes flash{from{outline:2px solid var(--fg)}}
 .tb{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid}
@@ -416,7 +416,7 @@ function renderHours(){const now=new Date(),ny=nyDay(now),ve=tzParts(now,'Americ
  if(ny.trading&&m>=O&&m<C){cls='open';txt='Bolsa abierta';cd='Cierra en '+dur(C-m)}
  else{cls='closed';txt='Bolsa cerrada';const n=nextOpen();cd=n?'Abre en '+dur(n):''}
  $('#hours').innerHTML=`<div class="st ${cls}"><i></i>${txt}</div>${ny.hol?'<div class="hol">FERIADO</div>':''}<div class="cd">${cd}</div>
- <h4>Horario EE. UU. · hora de Venezuela</h4><table><tr><td>Apertura</td><td>${hm(O+diff)}</td></tr><tr><td>Cierre</td><td>${hm(C+diff)}</td></tr></table>
+ <table><tr><td>Apertura</td><td>${hm(O+diff)}</td></tr><tr><td>Cierre</td><td>${hm(C+diff)}</td></tr></table>
  <div class="nt">Lunes a viernes · ahora en Caracas ${hm(ve.min)}${NY_HALF[ny.p.date]?' · hoy cierra antes':''}</div>`}
 renderHours();setInterval(renderHours,30000);
 // Actualización de precios en vivo cada 30 s
