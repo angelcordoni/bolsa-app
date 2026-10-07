@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0f172a"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff"><meta name="apple-mobile-web-app-capable" content="yes">
 <title>Bolsa App</title>
 <style>
-/* Tema azul marino oscuro, móvil primero: cifras alineadas, color solo para señal */
-:root{--bg:#0f172a;--panel:#151f36;--fg:#e5ebf5;--muted:#94a3b8;--line:#25324d;--accent:#3b82f6;
---up:#22c55e;--down:#ef4444;--warn:#eab308;--m20:#f59e0b;--m50:#3b82f6;--m100:#a855f7;--m200:#ef4444;
---z-green:#22c55e;--z-yellow:#eab308;--z-red:#ef4444;
---mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:dark}
+/* Blanco y negro: el único color es la zona del precio y el signo +/- */
+:root{--bg:#ffffff;--panel:#ffffff;--fg:#111111;--muted:#555555;--line:#e3e3e3;--accent:#111111;
+--up:#15803d;--down:#dc2626;--warn:#111111;--m20:#111111;--m50:#555555;--m100:#888888;--m200:#bbbbbb;
+--z-green:#15803d;--z-yellow:#a16207;--z-red:#dc2626;--zb-green:#dcfce7;--zb-yellow:#fef3c7;--zb-red:#fee2e2;
+--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color-scheme:light}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.45 var(--sans)}
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:5}
 h1{font-size:18px;margin:0;letter-spacing:.2px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .live{font-size:12px;font-weight:400;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}.dot.on{background:var(--up);animation:pulse 2s infinite}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted)}.dot.on{background:var(--fg);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}@media (prefers-reduced-motion:reduce){.dot.on{animation:none}}
 nav{display:flex;gap:4px}nav button{border:1px solid var(--line);background:transparent;color:var(--fg);padding:7px 14px;border-radius:6px;cursor:pointer;font:inherit}
 nav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
@@ -26,26 +26,25 @@ button.b.p{background:var(--accent);border-color:var(--accent);color:#fff}button
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line)}
 th{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;cursor:pointer;user-select:none;background:var(--panel)}
-td.l,th.l{text-align:left}tr:hover td{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+td.l,th.l{text-align:left}tr:hover td{background:#f6f6f6}
 td.star,th.star{width:34px;text-align:center;padding-right:0}
-.sym{font-weight:700;font-family:var(--mono);cursor:pointer;color:var(--accent)}.nm{color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+.sym{font-weight:700;font-family:var(--mono);cursor:pointer;color:var(--fg);text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line)}.nm{color:var(--muted);font-size:12px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
 .up{color:var(--up)}.down{color:var(--down)}.mut{color:var(--muted)}
-tr.z-green td:first-child{box-shadow:inset 4px 0 0 var(--z-green)}tr.z-yellow td:first-child{box-shadow:inset 4px 0 0 var(--z-yellow)}tr.z-red td:first-child{box-shadow:inset 4px 0 0 var(--z-red)}
 .zp{display:inline-block;padding:2px 8px;border-radius:6px;font-weight:700}
-.zp.z-green{background:color-mix(in srgb,var(--z-green) 20%,transparent);color:var(--z-green)}
-.zp.z-yellow{background:color-mix(in srgb,var(--z-yellow) 20%,transparent);color:var(--z-yellow)}
-.zp.z-red{background:color-mix(in srgb,var(--z-red) 18%,transparent);color:var(--z-red)}
-.flash{animation:flash 1s}@keyframes flash{from{background:color-mix(in srgb,var(--accent) 30%,transparent)}}
+.zp.z-green{background:var(--zb-green);color:var(--z-green)}
+.zp.z-yellow{background:var(--zb-yellow);color:var(--z-yellow)}
+.zp.z-red{background:var(--zb-red);color:var(--z-red)}
+.za{font-size:11px;font-weight:600;margin-top:3px;color:var(--fg)}
+.flash{animation:flash 1s}@keyframes flash{from{outline:2px solid var(--fg)}}
 .tb{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid}
-.t-eq{color:#22d3ee;background:color-mix(in srgb,#22d3ee 14%,transparent);border-color:color-mix(in srgb,#22d3ee 45%,transparent)}
-.t-etf{color:#c084fc;background:color-mix(in srgb,#c084fc 14%,transparent);border-color:color-mix(in srgb,#c084fc 45%,transparent)}
+.t-eq{color:var(--fg);border-color:var(--fg)}
+.t-etf{color:var(--fg);border-color:var(--fg);border-style:dashed}
 .t-oth{color:var(--muted);border-color:var(--line)}
 .pill{display:inline-block;min-width:42px;text-align:center;padding:2px 8px;border-radius:999px;font-weight:700;font-family:var(--mono)}
-.s-hi{background:color-mix(in srgb,var(--up) 18%,transparent);color:var(--up)}
-.s-md{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
-.s-lo{background:color-mix(in srgb,var(--down) 16%,transparent);color:var(--down)}
+.s-hi,.s-md,.s-lo{border:1px solid var(--fg);color:var(--fg)}
+.s-hi{background:#111;color:#fff}
 .ma{font-family:var(--mono);font-size:12px}.ma b{font-weight:600}
-.fav{border:none;background:none;cursor:pointer;font-size:18px;line-height:1;color:var(--muted);padding:2px}.fav.on{color:var(--warn)}
+.fav{border:none;background:none;cursor:pointer;font-size:18px;line-height:1;color:var(--muted);padding:2px}.fav.on{color:var(--fg)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--muted);margin:0 0 10px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:14px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}.card .k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)}.card .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
@@ -55,6 +54,11 @@ h2{font-size:15px;margin:22px 0 10px}
 .lg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted);margin-bottom:6px}.lg i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:4px}
 svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
 .bd{display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13px}.meter{grid-column:1/-1;height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:6px}.meter span{display:block;height:100%;background:var(--accent)}
+.guide{margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:8px;max-width:900px;line-height:1.6}
+.guide h2{margin-top:0;font-size:18px}.guide h3{font-size:15px;margin:22px 0 8px}.guide .lead{font-size:15px}
+.guide dl{display:grid;grid-template-columns:180px 1fr;gap:10px 18px;margin:0}.guide dt{font-weight:700}.guide dd{margin:0}
+@media(max-width:640px){.guide dl{grid-template-columns:1fr;gap:2px}.guide dd{margin-bottom:10px}}
+.gt{width:auto;border:1px solid var(--line)}.gt td,.gt th{white-space:normal;text-align:left;vertical-align:top}
 .note{font-size:12px;color:var(--muted);margin-top:14px;max-width:80ch}
 .err{color:var(--down)}.x{border:none;background:none;color:var(--muted);cursor:pointer;font-size:16px}
 #sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}
@@ -74,7 +78,7 @@ svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
  <div class="bar"><input id="q" placeholder="Buscar cualquier empresa o ETF (ej. Inditex, Tesla, VWCE)" size="40"><button class="b p" id="srch">Buscar</button><span id="st" class="mut"></span></div>
  <div id="sugs"></div>
  <div class="prog" id="prog" hidden><span id="progbar"></span></div>
- <div class="legend"><span><i style="background:var(--z-green)"></i>Verde: precio bajo la MM100 (zona de compra)</span><span><i style="background:var(--z-yellow)"></i>Amarillo: bajo la MM20</span><span><i style="background:var(--z-red)"></i>Rojo: por encima de la MM20</span><span>★ guarda en favoritos</span></div>
+ <div class="legend"><span><i style="background:var(--z-green)"></i>Verde: bajo la MM100 · Comprar</span><span><i style="background:var(--z-yellow)"></i>Amarillo: bajo la MM20 · Zona de compra</span><span><i style="background:var(--z-red)"></i>Rojo: sobre la MM20 · No comprar</span><span>★ guarda en favoritos</span></div>
  <div class="wrap"><table id="tscan"></table></div>
 </section>
 <section id="port" hidden>
@@ -89,8 +93,45 @@ svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
 <section id="det" hidden>
  <div class="bar"><input id="ds" placeholder="Símbolo" size="12"><button class="b p" id="dgo">Ver</button></div>
  <div id="dout" class="mut">Pulsa un símbolo en el mercado o en tu cartera para ver su gráfico.</div>
+<article class="guide" id="guide">
+ <h2>Guía: cómo usar la Bolsa App</h2>
+ <p class="lead">Esta app revisa acciones y ETFs con datos de Yahoo Finance, calcula sus medias móviles y su RSI, les da una nota de 0 a 100 y te dice, con el color del precio, si están en zona de compra.</p>
+ <h3>Las tres secciones</h3>
+ <dl>
+  <dt>Mercado</dt><dd>La tabla con todos los valores. Arriba eliges la lista (Todo el mercado, S&amp;P 500, Nasdaq 100, Dow Jones 30, IBEX 35, ETFs o Populares), filtras por tipo, por color o por texto y buscas cualquier empresa o ETF del mundo. Pulsa en el nombre de una columna para ordenar.</dd>
+  <dt>Mi cartera</dt><dd>Tus posiciones (símbolo, número de acciones y precio medio de compra) con su valor actual y su ganancia o pérdida, y debajo tus favoritos. Para guardar un favorito pulsa ☆ junto a cualquier valor.</dd>
+  <dt>Detalle</dt><dd>La ficha de un valor: gráfico de un año con el precio y las cuatro medias, el RSI, el desglose del score y esta guía. Pulsa el símbolo de cualquier valor para abrirla.</dd>
+ </dl>
+ <h3>Qué significa cada campo</h3>
+ <dl>
+  <dt>Tipo</dt><dd><b>Acción</b> si es una empresa y <b>ETF</b> si es un fondo cotizado que agrupa muchas empresas, materias primas o bonos.</dd>
+  <dt>Precio</dt><dd>Lo que vale ahora una acción o participación, en su moneda (USD, EUR…). Se actualiza solo cada 30 segundos con el mercado abierto. Su color indica la zona de compra (ver más abajo).</dd>
+  <dt>Día</dt><dd>Cuánto ha subido (+) o bajado (−) hoy respecto al cierre del día anterior.</dd>
+  <dt>MM20, MM50, MM100 y MM200</dt><dd>Las medias móviles: el precio medio de cierre de las últimas 20, 50, 100 y 200 sesiones. En cada celda ves arriba el valor de la media y debajo a qué distancia está el precio de ella. Por ejemplo, <i>+0,44 %</i> en MM20 significa que el precio está un 0,44 % por encima de esa media. La MM20 marca la tendencia corta (un mes de bolsa), la MM50 la media (unos tres meses), la MM100 unos cinco meses y la MM200 la larga (un año). Si el precio está por encima de todas, la tendencia es alcista.</dd>
+  <dt>RSI 14</dt><dd>El índice de fuerza relativa de las últimas 14 sesiones, de 0 a 100. Por encima de 70 suele indicar <b>sobrecompra</b> (ha subido mucho y rápido) y por debajo de 30, <b>sobreventa</b> (ha caído mucho). Entre 30 y 70 es zona neutral.</dd>
+  <dt>3 meses</dt><dd>Cuánto ha subido o bajado el precio en los últimos tres meses.</dd>
+  <dt>Score</dt><dd>La nota de 0 a 100 que calcula la app con la tendencia, el RSI, el momentum y el punto de entrada. 70 o más es <b>Favorable</b>, de 50 a 69 <b>Neutral</b> y menos de 50 <b>Desfavorable</b>.</dd>
+  <dt>Rango 52 semanas</dt><dd>El precio más bajo y el más alto del último año.</dd>
+ </dl>
+ <h3>Colores del precio</h3>
+ <table class="gt"><tbody>
+  <tr><td><span class="zp z-green">Verde</span></td><td>El precio está por debajo de la MM100.</td><td><b>Comprar</b></td></tr>
+  <tr><td><span class="zp z-yellow">Amarillo</span></td><td>El precio está por debajo de la MM20 (y por encima de la MM100).</td><td><b>Zona de compra</b></td></tr>
+  <tr><td><span class="zp z-red">Rojo</span></td><td>El precio está por encima de la MM20.</td><td><b>No comprar</b></td></tr>
+ </tbody></table>
+ <p>Los porcentajes con <span class="up">+</span> en verde son subidas y los que llevan <span class="down">−</span> en rojo, bajadas.</p>
+ <h3>Cómo se calcula el score</h3>
+ <table class="gt"><thead><tr><th class="l">Bloque</th><th>Puntos</th><th class="l">Qué mide</th></tr></thead><tbody>
+  <tr><td class="l">Tendencia</td><td>40</td><td class="l">Precio sobre la MM200 (12), MM100 (8), MM50 (10) y MM20 (5), y MM50 sobre MM200 (5).</td></tr>
+  <tr><td class="l">RSI</td><td>25</td><td class="l">Máximo con RSI entre 30 y 45; baja a medida que se acerca o supera 70.</td></tr>
+  <tr><td class="l">Momentum</td><td>20</td><td class="l">MM20 subiendo en la última semana (10) y rentabilidad a 3 meses (hasta 10).</td></tr>
+  <tr><td class="l">Punto de entrada</td><td>15</td><td class="l">Máximo si el precio está entre 0 % y +8 % sobre la MM50; menos si está muy alejado.</td></tr>
+ </tbody></table>
+ <h3>Datos y aviso</h3>
+ <p>Precios de Yahoo Finance. Las bolsas de EE. UU. van en tiempo real; otras, como Madrid, pueden llegar con hasta 15 minutos de retraso. Arriba ves si el mercado está abierto. Tu cartera y tus favoritos se guardan en este navegador. Las señales y el score son indicadores técnicos orientativos y no constituyen asesoramiento financiero.</p>
+</article>
 </section>
-<p class="note"><b>Colores:</b> verde cuando el precio está por debajo de la media móvil de 100 sesiones, amarillo cuando está por debajo de la de 20 y rojo cuando está por encima de la de 20. <b>Score (0-100):</b> Tendencia 40 pts (precio sobre MM200, MM100, MM50, MM20 y MM50 sobre MM200) · RSI 25 pts (máximo entre 30 y 45, mínimo por encima de 70) · Momentum 20 pts (MM20 subiendo y rentabilidad a 3 meses) · Punto de entrada 15 pts (cerca y por encima de la MM50). ≥70 Favorable, 50-69 Neutral, &lt;50 Desfavorable. Precios de Yahoo Finance actualizados cada 30 segundos con el mercado abierto; algunas bolsas, como Madrid, llegan con hasta 15 minutos de retraso. Es un indicador técnico orientativo y no constituye asesoramiento financiero. Tu cartera y tus favoritos se guardan en este navegador.</p>
+<p class="note">Cómo funciona la app y qué significa cada campo: pestaña <b>Detalle</b>. Indicadores técnicos orientativos; no constituyen asesoramiento financiero.</p>
 </main>
 <script src="lists.js"></script>
 <script>
@@ -104,10 +145,12 @@ function save(){try{localStorage.setItem('bolsa-app',JSON.stringify({favs:ST.fav
 const f=(v,d=2)=>v==null?'—':Number(v).toLocaleString('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sg=v=>v==null?'—':`<span class="${v>=0?'up':'down'}">${v>=0?'+':''}${f(v)}%</span>`;
 const pill=s=>`<span class="pill ${s>=70?'s-hi':s>=50?'s-md':'s-lo'}">${s}</span>`;
-const rsiC=r=>r==null?'—':`<span class="${r>70?'down':r<30?'up':''}">${f(r,1)}</span>`;
+const rsiC=r=>r==null?'—':f(r,1);
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const TYPES={EQUITY:['Acción','t-eq'],ETF:['ETF','t-etf'],MUTUALFUND:['Fondo','t-oth'],INDEX:['Índice','t-oth'],CRYPTOCURRENCY:['Cripto','t-oth']};
 const typeBadge=t=>{if(!t)return '<span class="mut">—</span>';const v=TYPES[t]||[t,'t-oth'];return `<span class="tb ${v[1]}">${esc(v[0])}</span>`};
+const sw=(c,da,w)=>`<svg width="24" height="8" aria-hidden="true" style="vertical-align:middle;margin-right:5px"><line x1="0" y1="4" x2="24" y2="4" stroke="${c}" stroke-width="${w}" ${da?`stroke-dasharray="${da}"`:''}/></svg>`;
+const zoneAct={green:'Comprar',yellow:'Zona de compra',red:'No comprar'};
 const zoneTxt={green:'Bajo MM100',yellow:'Bajo MM20',red:'Sobre MM20'};
 const isFav=s=>ST.favs.includes(s);
 function toggleFav(s){ST.favs=isFav(s)?ST.favs.filter(x=>x!==s):ST.favs.concat([s]);save();renderAll()}
@@ -136,7 +179,7 @@ function row(x){
  const fav=`<td class="star"><button class="fav ${isFav(x.symbol)?'on':''}" data-fav="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></td>`;
  if(x.error)return `<tr>${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span></td><td colspan="10" class="l err">${esc(x.error)}</td></tr>`;
  if(x.price==null)return `<tr>${fav}<td class="l"><span class="sym">${esc(x.symbol)}</span></td><td colspan="10" class="l mut">Cargando…</td></tr>`;
- return `<tr class="${x.zone?'z-'+x.zone:''}">${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span><div class="nm">${esc(x.name)}</div></td><td class="l">${typeBadge(x.type)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''} ${x._chg?'flash':''}">${f(x.price)}</span> <span class="mut">${esc(x.currency)}</span></td><td>${sg(x.change_pct)}</td>${maCells(x)}<td>${rsiC(x.rsi)}</td><td>${sg(x.ret_3m)}</td><td>${pill(x.score)}<div class="nm">${x.label}</div></td></tr>`}
+ return `<tr class="${x.zone?'z-'+x.zone:''}">${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span><div class="nm">${esc(x.name)}</div></td><td class="l">${typeBadge(x.type)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''} ${x._chg?'flash':''}">${f(x.price)}</span> <span class="mut">${esc(x.currency)}</span>${x.zone?`<div class="za">${zoneAct[x.zone]}</div>`:''}</td><td>${sg(x.change_pct)}</td>${maCells(x)}<td>${rsiC(x.rsi)}</td><td>${sg(x.ret_3m)}</td><td>${pill(x.score)}<div class="nm">${x.label}</div></td></tr>`}
 function bind(root,rerender){
  root.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;sortD=sortK===k?-sortD:-1;sortK=k;renderAll()});
  root.querySelectorAll('[data-s]').forEach(el=>el.onclick=()=>detail(el.dataset.s));
@@ -152,7 +195,7 @@ function renderPort(){
  const P=ST.portfolio;let tv={},tc={};
  const rows=P.map(p=>{const x=DATA[p.symbol]||{};const val=x.price!=null?x.price*p.shares:null,cost=p.cost*p.shares;const cur=x.currency||'?';
   if(val!=null){tv[cur]=(tv[cur]||0)+val;tc[cur]=(tc[cur]||0)+cost}
-  return `<tr class="${x.zone?'z-'+x.zone:''}"><td class="l"><span class="sym" data-s="${esc(p.symbol)}">${esc(p.symbol)}</span><div class="nm">${esc(x.name||'')}</div></td><td class="l">${typeBadge(x.type)}</td><td>${f(p.shares,p.shares%1?4:0)}</td><td>${f(p.cost)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''}">${f(x.price)}</span> <span class="mut">${esc(cur)}</span></td><td>${sg(x.change_pct)}</td><td>${f(val)}</td><td>${val==null?'—':`<span class="${val>=cost?'up':'down'}">${f(val-cost)}</span>`}</td><td>${sg(val==null?null:(val/cost-1)*100)}</td><td>${rsiC(x.rsi)}</td><td>${x.score!=null?pill(x.score):'—'}</td><td><button class="x" data-rm="${esc(p.symbol)}" aria-label="Eliminar posición">×</button></td></tr>`}).join('');
+  return `<tr class="${x.zone?'z-'+x.zone:''}"><td class="l"><span class="sym" data-s="${esc(p.symbol)}">${esc(p.symbol)}</span><div class="nm">${esc(x.name||'')}</div></td><td class="l">${typeBadge(x.type)}</td><td>${f(p.shares,p.shares%1?4:0)}</td><td>${f(p.cost)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''}">${f(x.price)}</span> <span class="mut">${esc(cur)}</span>${x.zone?`<div class="za">${zoneAct[x.zone]}</div>`:''}</td><td>${sg(x.change_pct)}</td><td>${f(val)}</td><td>${val==null?'—':`<span class="${val>=cost?'up':'down'}">${f(val-cost)}</span>`}</td><td>${sg(val==null?null:(val/cost-1)*100)}</td><td>${rsiC(x.rsi)}</td><td>${x.score!=null?pill(x.score):'—'}</td><td><button class="x" data-rm="${esc(p.symbol)}" aria-label="Eliminar posición">×</button></td></tr>`}).join('');
  $('#pcards').innerHTML=Object.keys(tv).length?Object.keys(tv).map(c=>`<div class="card"><div class="k">Valor cartera (${esc(c)})</div><div class="v">${f(tv[c])}</div></div><div class="card"><div class="k">Ganancia / pérdida (${esc(c)})</div><div class="v ${tv[c]>=tc[c]?'up':'down'}">${f(tv[c]-tc[c])} · ${f((tv[c]/tc[c]-1)*100)}%</div></div>`).join('')+`<div class="card"><div class="k">Favoritos</div><div class="v">${ST.favs.length}</div></div>`:`<div class="card"><div class="k">Posiciones</div><div class="v">Ninguna</div><div class="mut">Añade tu primera posición abajo.</div></div><div class="card"><div class="k">Favoritos</div><div class="v">${ST.favs.length}</div></div>`;
  $('#tport').innerHTML='<thead><tr><th class="l">Valor</th><th class="l">Tipo</th><th>Acciones</th><th>P. compra</th><th>Precio</th><th>Día</th><th>Valor actual</th><th>G/P</th><th>G/P %</th><th>RSI</th><th>Score</th><th></th></tr></thead><tbody>'+(rows||'<tr><td colspan="12" class="l mut">Aún no hay posiciones.</td></tr>')+'</tbody>';
  bind($('#tport'));$('#tport').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.portfolio=ST.portfolio.filter(p=>p.symbol!==b.dataset.rm);save();renderPort()});
@@ -177,25 +220,25 @@ $('#dgo').onclick=()=>detail($('#ds').value);$('#ds').onkeydown=e=>{if(e.key==='
 let curDetail=null;
 function renderDetailHead(){const x=curDetail;const live=DATA[x.symbol]&&!DATA[x.symbol].error?DATA[x.symbol]:x;const el=$('#dhead');if(!el)return;
  el.innerHTML=`<div class="card"><div class="k">${esc(live.name)} <button class="fav ${isFav(x.symbol)?'on':''}" data-fav="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${f(live.price)}</span> ${esc(live.currency)}</div><div>${sg(live.change_pct)} hoy · ${typeBadge(live.type)}</div></div>
- <div class="card"><div class="k">Zona</div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${zoneTxt[live.zone]||'—'}</span></div></div>
+ <div class="card"><div class="k">Zona</div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${zoneTxt[live.zone]||'—'}</span></div><div class="za">${zoneAct[live.zone]||''}</div></div>
  <div class="card"><div class="k">Score</div><div class="v">${pill(live.score)} ${live.label}</div></div><div class="card"><div class="k">RSI 14</div><div class="v">${rsiC(live.rsi)}</div><div class="mut">${live.rsi>70?'Sobrecompra':live.rsi<30?'Sobreventa':'Zona neutral'}</div></div>
  <div class="card"><div class="k">Rango 52 semanas</div><div class="v" style="font-size:15px">${f(live.low_52w)} – ${f(live.high_52w)}</div></div>`;bind(el)}
 async function detail(s){s=(s||'').trim().toUpperCase();if(!s)return;tab('det');$('#ds').value=s;$('#dout').innerHTML='Cargando '+esc(s)+'…';
  try{const x=await api('/api/detail?symbol='+encodeURIComponent(s));curDetail=x;DATA[s]=Object.assign({},x,{history:undefined});
  $('#dout').innerHTML=`<div class="cards" id="dhead"></div>
- <div class="grid2"><div class="panel"><div class="lg"><span><i style="background:var(--fg)"></i>Precio</span><span><i style="background:var(--m20)"></i>MM20 ${f(x.sma['20'])}</span><span><i style="background:var(--m50)"></i>MM50 ${f(x.sma['50'])}</span><span><i style="background:var(--m100)"></i>MM100 ${f(x.sma['100'])}</span><span><i style="background:var(--m200)"></i>MM200 ${f(x.sma['200'])}</span></div><div id="ch"></div></div>
+ <div class="grid2"><div class="panel"><div class="lg"><span>${sw('var(--fg)','',2)}Precio</span><span>${sw('var(--m20)','8 3 2 3',1.2)}MM20 ${f(x.sma['20'])}</span><span>${sw('var(--m50)','2 3',1.4)}MM50 ${f(x.sma['50'])}</span><span>${sw('var(--m100)','6 4',1.4)}MM100 ${f(x.sma['100'])}</span><span>${sw('var(--m200)','',1.6)}MM200 ${f(x.sma['200'])}</span></div><div id="ch"></div></div>
  <div class="panel"><b>Desglose del score</b><div class="bd" style="margin-top:10px">${x.breakdown.map(b=>`<span>${b.name}</span><span>${b.points}/${b.max}</span><div class="meter"><span style="width:${b.points/b.max*100}%"></span></div>`).join('')}</div>
  <div style="margin-top:8px"><b>Distancia a las medias</b>${['20','50','100','200'].map(n=>`<div class="bd"><span>MM${n} (${f(x.sma[n])})</span><span>${sg(x.dist[n])}</span></div>`).join('')}</div></div></div>`;
  renderDetailHead();drawChart(x.history);setLive()}catch(e){$('#dout').innerHTML='<span class="err">No se pudo cargar '+esc(s)+': '+esc(e.message)+'</span>'}}
 function drawChart(h){const W=900,H1=300,H2=110,P=48,n=h.close.length;const all=[...h.close,...h.sma20,...h.sma50,...h.sma100,...h.sma200].filter(v=>v!=null);
  const lo=Math.min(...all),hi=Math.max(...all),X=i=>P+i*(W-P-10)/(n-1),Y=v=>10+(hi-v)/(hi-lo||1)*(H1-20),R=v=>H1+14+(100-v)/100*(H2-20);
- const line=(a,c,w=1.4)=>{let d='';a.forEach((v,i)=>{if(v==null)return;d+=(d?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)});return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}"/>`};
+ const line=(a,c,w=1.4,da='')=>{let d='';a.forEach((v,i)=>{if(v==null)return;d+=(d?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)});return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" ${da?`stroke-dasharray="${da}"`:''}/>`};
  let g='';for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4;g+=`<line x1="${P}" x2="${W-10}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="4" y="${Y(v)+3}">${f(v)}</text>`}
  [30,50,70].forEach(v=>g+=`<line x1="${P}" x2="${W-10}" y1="${R(v)}" y2="${R(v)}" stroke="var(--line)" ${v!==50?'stroke-dasharray="4 3"':''}/><text x="4" y="${R(v)+3}">${v}</text>`);
  let rd='';h.rsi.forEach((v,i)=>{if(v==null)return;rd+=(rd?'L':'M')+X(i).toFixed(1)+' '+R(v).toFixed(1)});
  const months=[];let pm=-1;h.t.forEach((t,i)=>{const d=new Date(t*1000);if(d.getMonth()!==pm){pm=d.getMonth();if(i>5)months.push(`<text x="${X(i)}" y="${H1+H2+12}" text-anchor="middle">${d.toLocaleDateString('es-ES',{month:'short'})}</text>`)}});
- $('#ch').innerHTML=`<svg viewBox="0 0 ${W} ${H1+H2+18}" width="100%" role="img" aria-label="Precio, medias móviles y RSI">${g}${line(h.sma200,'var(--m200)')}${line(h.sma100,'var(--m100)')}${line(h.sma50,'var(--m50)')}${line(h.sma20,'var(--m20)')}${line(h.close,'var(--fg)',1.8)}
- <circle cx="${X(n-1)}" cy="${Y(h.close[n-1])}" r="3.5" fill="var(--accent)"/><text x="${P}" y="${H1+10}">RSI 14</text><path d="${rd}" fill="none" stroke="var(--accent)" stroke-width="1.4"/>${months.join('')}</svg>`}
+ $('#ch').innerHTML=`<svg viewBox="0 0 ${W} ${H1+H2+18}" width="100%" role="img" aria-label="Precio, medias móviles y RSI">${g}${line(h.sma200,'var(--m200)',1.6)}${line(h.sma100,'var(--m100)',1.4,'6 4')}${line(h.sma50,'var(--m50)',1.4,'2 3')}${line(h.sma20,'var(--m20)',1.2,'8 3 2 3')}${line(h.close,'var(--fg)',2)}
+ <circle cx="${X(n-1)}" cy="${Y(h.close[n-1])}" r="3.5" fill="var(--fg)"/><text x="${P}" y="${H1+10}">RSI 14</text><path d="${rd}" fill="none" stroke="var(--fg)" stroke-width="1.4"/>${months.join('')}</svg>`}
 // Actualización automática: cada 30 s refresca lo que estás viendo
 let lastBig=0;setInterval(()=>{if(document.hidden||loading)return;const syms=visibleSyms();if(!syms.length)return;
  // Las listas grandes (S&P 500) se refrescan cada 90 s para no saturar la fuente de datos
