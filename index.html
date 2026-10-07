@@ -36,6 +36,10 @@ tr.z-green td:first-child{box-shadow:inset 4px 0 0 var(--z-green)}tr.z-yellow td
 .zp.z-yellow{background:color-mix(in srgb,var(--z-yellow) 20%,transparent);color:var(--z-yellow)}
 .zp.z-red{background:color-mix(in srgb,var(--z-red) 18%,transparent);color:var(--z-red)}
 .flash{animation:flash 1s}@keyframes flash{from{background:color-mix(in srgb,var(--accent) 30%,transparent)}}
+.tb{display:inline-block;padding:2px 10px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid}
+.t-eq{color:#22d3ee;background:color-mix(in srgb,#22d3ee 14%,transparent);border-color:color-mix(in srgb,#22d3ee 45%,transparent)}
+.t-etf{color:#c084fc;background:color-mix(in srgb,#c084fc 14%,transparent);border-color:color-mix(in srgb,#c084fc 45%,transparent)}
+.t-oth{color:var(--muted);border-color:var(--line)}
 .pill{display:inline-block;min-width:42px;text-align:center;padding:2px 8px;border-radius:999px;font-weight:700;font-family:var(--mono)}
 .s-hi{background:color-mix(in srgb,var(--up) 18%,transparent);color:var(--up)}
 .s-md{background:color-mix(in srgb,var(--warn) 20%,transparent);color:var(--warn)}
@@ -64,6 +68,7 @@ svg text{fill:var(--muted);font-size:10px;font-family:var(--mono)}
  <div class="bar">
   <select id="lst" aria-label="Lista de valores"></select>
   <input id="flttxt" placeholder="Filtrar por nombre o símbolo" size="24">
+  <select id="ftype" aria-label="Tipo"><option value="all">Acciones y ETFs</option><option value="EQUITY">Solo acciones</option><option value="ETF">Solo ETFs</option></select>
   <select id="flt" aria-label="Filtro"><option value="all">Todos</option><option value="green">Verde: bajo MM100</option><option value="yellow">Amarillo: bajo MM20</option><option value="red">Rojo: sobre MM20</option><option value="fav">Score ≥ 70</option><option value="os">RSI &lt; 30</option><option value="ob">RSI &gt; 70</option></select>
  </div>
  <div class="bar"><input id="q" placeholder="Buscar cualquier empresa o ETF (ej. Inditex, Tesla, VWCE)" size="40"><button class="b p" id="srch">Buscar</button><span id="st" class="mut"></span></div>
@@ -101,6 +106,8 @@ const sg=v=>v==null?'—':`<span class="${v>=0?'up':'down'}">${v>=0?'+':''}${f(v
 const pill=s=>`<span class="pill ${s>=70?'s-hi':s>=50?'s-md':'s-lo'}">${s}</span>`;
 const rsiC=r=>r==null?'—':`<span class="${r>70?'down':r<30?'up':''}">${f(r,1)}</span>`;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const TYPES={EQUITY:['Acción','t-eq'],ETF:['ETF','t-etf'],MUTUALFUND:['Fondo','t-oth'],INDEX:['Índice','t-oth'],CRYPTOCURRENCY:['Cripto','t-oth']};
+const typeBadge=t=>{if(!t)return '<span class="mut">—</span>';const v=TYPES[t]||[t,'t-oth'];return `<span class="tb ${v[1]}">${esc(v[0])}</span>`};
 const zoneTxt={green:'Bajo MM100',yellow:'Bajo MM20',red:'Sobre MM20'};
 const isFav=s=>ST.favs.includes(s);
 function toggleFav(s){ST.favs=isFav(s)?ST.favs.filter(x=>x!==s):ST.favs.concat([s]);save();renderAll()}
@@ -123,41 +130,41 @@ async function load(syms,showProg){
 function maCells(x){return ['20','50','100','200'].map(n=>{const d=x.dist&&x.dist[n];return d==null?`<td class="ma mut">—</td>`:`<td class="ma"><b>${f(x.sma[n])}</b><br>${sg(d)}</td>`}).join('')}
 function sortRows(rows){const key=x=>x.error?-1e9:sortK==='symbol'?x.symbol:sortK.startsWith('d')?(x.dist[sortK.slice(1)]??-1e9):(x[sortK]??-1e9);
  return rows.sort((a,b)=>{const A=key(a),B=key(b);return (A>B?1:A<B?-1:0)*sortD})}
-const H=[['','★'],['symbol','Valor'],['price','Precio'],['change_pct','Día'],['d20','MM20'],['d50','MM50'],['d100','MM100'],['d200','MM200'],['rsi','RSI 14'],['ret_3m','3 meses'],['score','Score']];
+const H=[['','★'],['symbol','Valor'],['type','Tipo'],['price','Precio'],['change_pct','Día'],['d20','MM20'],['d50','MM50'],['d100','MM100'],['d200','MM200'],['rsi','RSI 14'],['ret_3m','3 meses'],['score','Score']];
 function head(){return '<thead><tr>'+H.map(([k,t],i)=>`<th data-k="${k}" class="${i===0?'star':i===1?'l':''}">${t}${k&&k===sortK?(sortD>0?' ▲':' ▼'):''}</th>`).join('')+'</tr></thead>'}
 function row(x){
  const fav=`<td class="star"><button class="fav ${isFav(x.symbol)?'on':''}" data-fav="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></td>`;
- if(x.error)return `<tr>${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span></td><td colspan="9" class="l err">${esc(x.error)}</td></tr>`;
- if(x.price==null)return `<tr>${fav}<td class="l"><span class="sym">${esc(x.symbol)}</span></td><td colspan="9" class="l mut">Cargando…</td></tr>`;
- return `<tr class="${x.zone?'z-'+x.zone:''}">${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span><div class="nm">${esc(x.name)}${x.type?' · '+esc(x.type):''}</div></td><td><span class="zp ${x.zone?'z-'+x.zone:''} ${x._chg?'flash':''}">${f(x.price)}</span> <span class="mut">${esc(x.currency)}</span></td><td>${sg(x.change_pct)}</td>${maCells(x)}<td>${rsiC(x.rsi)}</td><td>${sg(x.ret_3m)}</td><td>${pill(x.score)}<div class="nm">${x.label}</div></td></tr>`}
+ if(x.error)return `<tr>${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span></td><td colspan="10" class="l err">${esc(x.error)}</td></tr>`;
+ if(x.price==null)return `<tr>${fav}<td class="l"><span class="sym">${esc(x.symbol)}</span></td><td colspan="10" class="l mut">Cargando…</td></tr>`;
+ return `<tr class="${x.zone?'z-'+x.zone:''}">${fav}<td class="l"><span class="sym" data-s="${esc(x.symbol)}">${esc(x.symbol)}</span><div class="nm">${esc(x.name)}</div></td><td class="l">${typeBadge(x.type)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''} ${x._chg?'flash':''}">${f(x.price)}</span> <span class="mut">${esc(x.currency)}</span></td><td>${sg(x.change_pct)}</td>${maCells(x)}<td>${rsiC(x.rsi)}</td><td>${sg(x.ret_3m)}</td><td>${pill(x.score)}<div class="nm">${x.label}</div></td></tr>`}
 function bind(root,rerender){
  root.querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;sortD=sortK===k?-sortD:-1;sortK=k;renderAll()});
  root.querySelectorAll('[data-s]').forEach(el=>el.onclick=()=>detail(el.dataset.s));
  root.querySelectorAll('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(b.dataset.fav)})}
 function renderScan(){
- const fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
+ const ft=$('#ftype').value,fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
  let rows=listSyms().map(s=>DATA[s]||{symbol:s});
  rows=rows.filter(x=>{if(tx&&!(x.symbol.toLowerCase().includes(tx)||(x.name||'').toLowerCase().includes(tx)))return false;
-  if(fl==='all')return true;if(x.error||x.price==null)return false;
+  if(ft!=='all'&&x.type&&x.type!==ft)return false;if(fl==='all')return true;if(x.error||x.price==null)return false;
   if(['green','yellow','red'].includes(fl))return x.zone===fl;if(fl==='fav')return x.score>=70;if(fl==='os')return x.rsi<30;if(fl==='ob')return x.rsi>70;return true});
- $('#tscan').innerHTML=head()+'<tbody>'+sortRows(rows).map(row).join('')+(rows.length?'':'<tr><td colspan="11" class="l mut">Ningún valor cumple el filtro.</td></tr>')+'</tbody>';bind($('#tscan'))}
+ $('#tscan').innerHTML=head()+'<tbody>'+sortRows(rows).map(row).join('')+(rows.length?'':'<tr><td colspan="12" class="l mut">Ningún valor cumple el filtro.</td></tr>')+'</tbody>';bind($('#tscan'))}
 function renderPort(){
  const P=ST.portfolio;let tv={},tc={};
  const rows=P.map(p=>{const x=DATA[p.symbol]||{};const val=x.price!=null?x.price*p.shares:null,cost=p.cost*p.shares;const cur=x.currency||'?';
   if(val!=null){tv[cur]=(tv[cur]||0)+val;tc[cur]=(tc[cur]||0)+cost}
-  return `<tr class="${x.zone?'z-'+x.zone:''}"><td class="l"><span class="sym" data-s="${esc(p.symbol)}">${esc(p.symbol)}</span><div class="nm">${esc(x.name||'')}</div></td><td>${f(p.shares,p.shares%1?4:0)}</td><td>${f(p.cost)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''}">${f(x.price)}</span> <span class="mut">${esc(cur)}</span></td><td>${sg(x.change_pct)}</td><td>${f(val)}</td><td>${val==null?'—':`<span class="${val>=cost?'up':'down'}">${f(val-cost)}</span>`}</td><td>${sg(val==null?null:(val/cost-1)*100)}</td><td>${rsiC(x.rsi)}</td><td>${x.score!=null?pill(x.score):'—'}</td><td><button class="x" data-rm="${esc(p.symbol)}" aria-label="Eliminar posición">×</button></td></tr>`}).join('');
+  return `<tr class="${x.zone?'z-'+x.zone:''}"><td class="l"><span class="sym" data-s="${esc(p.symbol)}">${esc(p.symbol)}</span><div class="nm">${esc(x.name||'')}</div></td><td class="l">${typeBadge(x.type)}</td><td>${f(p.shares,p.shares%1?4:0)}</td><td>${f(p.cost)}</td><td><span class="zp ${x.zone?'z-'+x.zone:''}">${f(x.price)}</span> <span class="mut">${esc(cur)}</span></td><td>${sg(x.change_pct)}</td><td>${f(val)}</td><td>${val==null?'—':`<span class="${val>=cost?'up':'down'}">${f(val-cost)}</span>`}</td><td>${sg(val==null?null:(val/cost-1)*100)}</td><td>${rsiC(x.rsi)}</td><td>${x.score!=null?pill(x.score):'—'}</td><td><button class="x" data-rm="${esc(p.symbol)}" aria-label="Eliminar posición">×</button></td></tr>`}).join('');
  $('#pcards').innerHTML=Object.keys(tv).length?Object.keys(tv).map(c=>`<div class="card"><div class="k">Valor cartera (${esc(c)})</div><div class="v">${f(tv[c])}</div></div><div class="card"><div class="k">Ganancia / pérdida (${esc(c)})</div><div class="v ${tv[c]>=tc[c]?'up':'down'}">${f(tv[c]-tc[c])} · ${f((tv[c]/tc[c]-1)*100)}%</div></div>`).join('')+`<div class="card"><div class="k">Favoritos</div><div class="v">${ST.favs.length}</div></div>`:`<div class="card"><div class="k">Posiciones</div><div class="v">Ninguna</div><div class="mut">Añade tu primera posición abajo.</div></div><div class="card"><div class="k">Favoritos</div><div class="v">${ST.favs.length}</div></div>`;
- $('#tport').innerHTML='<thead><tr><th class="l">Valor</th><th>Acciones</th><th>P. compra</th><th>Precio</th><th>Día</th><th>Valor actual</th><th>G/P</th><th>G/P %</th><th>RSI</th><th>Score</th><th></th></tr></thead><tbody>'+(rows||'<tr><td colspan="11" class="l mut">Aún no hay posiciones.</td></tr>')+'</tbody>';
+ $('#tport').innerHTML='<thead><tr><th class="l">Valor</th><th class="l">Tipo</th><th>Acciones</th><th>P. compra</th><th>Precio</th><th>Día</th><th>Valor actual</th><th>G/P</th><th>G/P %</th><th>RSI</th><th>Score</th><th></th></tr></thead><tbody>'+(rows||'<tr><td colspan="12" class="l mut">Aún no hay posiciones.</td></tr>')+'</tbody>';
  bind($('#tport'));$('#tport').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.portfolio=ST.portfolio.filter(p=>p.symbol!==b.dataset.rm);save();renderPort()});
  const favRows=ST.favs.map(s=>DATA[s]||{symbol:s});
- $('#tfav').innerHTML=head()+'<tbody>'+(favRows.length?sortRows(favRows).map(row).join(''):'<tr><td colspan="11" class="l mut">Pulsa ☆ junto a cualquier valor del mercado para guardarlo aquí.</td></tr>')+'</tbody>';bind($('#tfav'))}
+ $('#tfav').innerHTML=head()+'<tbody>'+(favRows.length?sortRows(favRows).map(row).join(''):'<tr><td colspan="12" class="l mut">Pulsa ☆ junto a cualquier valor del mercado para guardarlo aquí.</td></tr>')+'</tbody>';bind($('#tfav'))}
 function renderAll(){if(!$('#scan').hidden)renderScan();if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderScan()}
 $('#lst').innerHTML=LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=curList;
 $('#lst').onchange=()=>{curList=$('#lst').value;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
-$('#flt').onchange=renderScan;$('#flttxt').oninput=renderScan;
+$('#flt').onchange=renderScan;$('#ftype').onchange=renderScan;$('#flttxt').oninput=renderScan;
 async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
  try{const r=await api('/api/search?q='+encodeURIComponent(q));$('#sugs').innerHTML=r.length?r.map(x=>`<span><button class="b" data-d="${esc(x.symbol)}">${esc(x.symbol)} · ${esc(x.name)} (${esc(x.exchange)})</button> <button class="fav ${isFav(x.symbol)?'on':''}" data-sf="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></span>`).join(''):'<span class="mut">Sin resultados</span>';
  $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>detail(b.dataset.d));
@@ -169,7 +176,7 @@ $('#padd').onclick=()=>{const s=$('#ps').value.trim().toUpperCase(),n=parseFloat
 $('#dgo').onclick=()=>detail($('#ds').value);$('#ds').onkeydown=e=>{if(e.key==='Enter')detail($('#ds').value)};
 let curDetail=null;
 function renderDetailHead(){const x=curDetail;const live=DATA[x.symbol]&&!DATA[x.symbol].error?DATA[x.symbol]:x;const el=$('#dhead');if(!el)return;
- el.innerHTML=`<div class="card"><div class="k">${esc(live.name)} <button class="fav ${isFav(x.symbol)?'on':''}" data-fav="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${f(live.price)}</span> ${esc(live.currency)}</div><div>${sg(live.change_pct)} hoy</div></div>
+ el.innerHTML=`<div class="card"><div class="k">${esc(live.name)} <button class="fav ${isFav(x.symbol)?'on':''}" data-fav="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${f(live.price)}</span> ${esc(live.currency)}</div><div>${sg(live.change_pct)} hoy · ${typeBadge(live.type)}</div></div>
  <div class="card"><div class="k">Zona</div><div class="v"><span class="zp ${live.zone?'z-'+live.zone:''}">${zoneTxt[live.zone]||'—'}</span></div></div>
  <div class="card"><div class="k">Score</div><div class="v">${pill(live.score)} ${live.label}</div></div><div class="card"><div class="k">RSI 14</div><div class="v">${rsiC(live.rsi)}</div><div class="mut">${live.rsi>70?'Sobrecompra':live.rsi<30?'Sobreventa':'Zona neutral'}</div></div>
  <div class="card"><div class="k">Rango 52 semanas</div><div class="v" style="font-size:15px">${f(live.low_52w)} – ${f(live.high_52w)}</div></div>`;bind(el)}
