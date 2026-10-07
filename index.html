@@ -134,18 +134,27 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .hmleg{display:flex;align-items:center;justify-content:center;gap:2px;font-size:10px;color:#aab;padding-top:8px}.hmleg i{width:26px;height:8px;display:block}.hmleg span{margin:0 6px}
 .opps .opp{padding:9px 2px;gap:8px}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}
 /* Horario de la bolsa de EE. UU. en hora de Venezuela */
-.hours{background:#fff;color:#000;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.45}
-.hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:14px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
+.hours{background:#fff;color:#000;border-radius:14px;padding:16px 16px;font-size:14px;line-height:1.5;font-weight:700}
+.hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
 .hours .st.open{color:#15803d}.hours .st.closed{color:#dc2626}.hours .st.open i{background:#16a34a;box-shadow:0 0 0 4px rgba(22,163,74,.2)}.hours .st.closed i{background:#dc2626}
-.hours .cd{font-weight:600;margin-bottom:8px}.hours h4{margin:10px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.hours .cd{font-weight:700;margin-bottom:8px}.hours h4{margin:12px 0 4px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .hours table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.hours td{padding:2px 0;border:none;text-align:left;white-space:nowrap}.hours td+td{text-align:right;font-weight:700}
-.hours .nt{color:#444;font-size:11px;margin-top:6px}
-@media(max-width:999px){.hours{width:100%;padding:8px 12px}.hours h4,.hours table,.hours .nt{display:none}.hours .cd{margin:0}.hours .st{font-size:13px}}
+.hours .nt{color:#222;font-size:12px;margin-top:8px}.hours td+td{font-weight:800}
+.hol{background:#dc2626;color:#fff;font-weight:800;font-size:16px;letter-spacing:2px;text-align:center;border-radius:8px;padding:7px;margin:6px 0 4px}
+.side{display:flex;flex-direction:column;gap:10px}
+.side .lk{display:flex;flex-direction:column;gap:6px}
+.side .lk a{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.92);color:#000;font-weight:700;text-decoration:none;border-radius:10px;padding:9px 12px;font-size:13px}.side .lk a:hover{background:#fff}
+.side .rf{background:rgba(255,255,255,.92);border-radius:10px;padding:10px 12px;color:#000;font-size:12px;font-weight:700}
+.side .rf label{display:block;margin-bottom:6px}.side .rf .row{display:flex;gap:6px}.side .rf select{flex:1;min-width:0;padding:6px 8px;font-weight:700;border-radius:8px}
+.side .rf button{border:none;background:#000;color:#fff;font:inherit;font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer}.side .rf .nx{margin-top:6px;font-weight:600;color:#222}
+@media(max-width:999px){.side{width:100%;flex-direction:row;flex-wrap:wrap}.side .lk{flex-direction:row;flex:1 1 100%}.side .lk a{flex:1}.side .rf{flex:1 1 100%}.hours{width:100%;padding:8px 12px}.hours h4,.hours table,.hours .nt{display:none}.hours .cd{margin:0}.hours .st{font-size:13px}}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
 <nav><button data-t="scan" class="on">Mercado</button><button data-t="port">Mi cartera</button><button data-t="det">Detalle</button></nav></div>
-<div class="hours" id="hours"></div></header>
+<div class="side"><div class="hours" id="hours"></div>
+<div class="lk"><a href="https://es.finance.yahoo.com/?guccounter=1" target="_blank" rel="noopener">Yahoo Finanzas <span>↗</span></a><a href="https://www.etf.com/" target="_blank" rel="noopener">ETF.com <span>↗</span></a></div>
+<div class="rf"><label for="rfsel">Actualización de precios</label><div class="row"><select id="rfsel"><option value="0.5">En vivo (30 s)</option><option value="5">Cada 5 min</option><option value="10">Cada 10 min</option><option value="15">Cada 15 min</option><option value="30">Cada 30 min</option><option value="60">Cada 60 min</option></select><button id="rfnow" title="Actualizar ahora">↻</button></div><div class="nx" id="rfnx"></div></div></div></header>
 <main>
 <section id="scan">
  <div class="hero">
@@ -195,7 +204,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
  <h3>Qué significa cada campo</h3>
  <dl>
   <dt>Tipo</dt><dd><b>Acción</b> si es una empresa y <b>ETF</b> si es un fondo cotizado que agrupa muchas empresas, materias primas o bonos.</dd>
-  <dt>Precio</dt><dd>Lo que vale ahora una acción o participación, en su moneda (USD, EUR…). Se actualiza solo cada 30 segundos con el mercado abierto. Su color indica la zona de compra (ver más abajo).</dd>
+  <dt>Precio</dt><dd>Lo que vale ahora una acción o participación, en su moneda (USD, EUR…). Se actualiza solo: en vivo cada 30 segundos o cada 5, 10, 15, 30 o 60 minutos, según elijas en «Actualización de precios» de la barra lateral. Su color indica la zona de compra (ver más abajo).</dd>
   <dt>Día</dt><dd>Cuánto ha subido (+) o bajado (−) hoy respecto al cierre del día anterior.</dd>
   <dt>MM20, MM50, MM100 y MM200</dt><dd>Las medias móviles: el precio medio de cierre de las últimas 20, 50, 100 y 200 sesiones. En cada celda ves arriba el valor de la media y debajo a qué distancia está el precio de ella. Por ejemplo, <i>+0,44 %</i> en MM20 significa que el precio está un 0,44 % por encima de esa media. La MM20 marca la tendencia corta (un mes de bolsa), la MM50 la media (unos tres meses), la MM100 unos cinco meses y la MM200 la larga (un año). Si el precio está por encima de todas, la tendencia es alcista.</dd>
   <dt>RSI 14</dt><dd>El índice de fuerza relativa de las últimas 14 sesiones, de 0 a 100. Por encima de 70 suele indicar <b>sobrecompra</b> (ha subido mucho y rápido) y por debajo de 30, <b>sobreventa</b> (ha caído mucho). Entre 30 y 70 es zona neutral.</dd>
@@ -366,7 +375,6 @@ function drawChart(h){const W=900,H1=300,H2=110,P=48,n=h.close.length;const all=
  $('#ch').innerHTML=`<svg viewBox="0 0 ${W} ${H1+H2+18}" width="100%" role="img" aria-label="Precio, medias móviles y RSI">${g}${line(h.sma200,'var(--m200)',1.6)}${line(h.sma100,'var(--m100)',1.4,'6 4')}${line(h.sma50,'var(--m50)',1.4,'2 3')}${line(h.sma20,'var(--m20)',1.2,'8 3 2 3')}${line(h.close,'var(--fg)',2)}
  <circle cx="${X(n-1)}" cy="${Y(h.close[n-1])}" r="3.5" fill="var(--fg)"/><text x="${P}" y="${H1+10}">RSI 14</text><path d="${rd}" fill="none" stroke="var(--fg)" stroke-width="1.4"/>${months.join('')}</svg>`}
 // Actualización automática: cada 30 s refresca lo que estás viendo
-setInterval(()=>{if(!document.hidden&&!$('#scan').hidden)loadMkt()},30000);
 
 // Mapa de calor: rectángulos proporcionales a la capitalización, color según la variación del día
 const SECT={'Information Technology':'Tecnología','Health Care':'Salud','Financials':'Finanzas','Consumer Discretionary':'Consumo discrecional','Communication Services':'Comunicaciones','Industrials':'Industria','Consumer Staples':'Consumo básico','Energy':'Energía','Utilities':'Servicios públicos','Real Estate':'Inmobiliario','Materials':'Materiales'};
@@ -394,7 +402,6 @@ function renderHeatmap(){const el=$('#hmap');if(!el||!HM)return;const W=el.clien
  el.innerHTML=html;el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
 async function loadHeatmap(){try{HM=await api('/api/heatmap');$('#hmst').textContent=(HM.source==='cap'?'tamaño = capitalización':'mismo peso por empresa')+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});renderHeatmap()}catch(e){$('#hmst').textContent='No disponible'}}
 let hmT;window.addEventListener('resize',()=>{clearTimeout(hmT);hmT=setTimeout(renderHeatmap,150)});
-setInterval(()=>{if(!document.hidden&&!$('#scan').hidden)loadHeatmap()},60000);
 
 // Horario de NYSE/Nasdaq (9:30–16:00 hora de Nueva York) convertido a hora de Venezuela (Caracas, UTC−4 todo el año)
 const NY_HOL={'2026-01-01':1,'2026-01-19':1,'2026-02-16':1,'2026-04-03':1,'2026-05-25':1,'2026-06-19':1,'2026-07-03':1,'2026-09-07':1,'2026-11-26':1,'2026-12-25':1,
@@ -410,15 +417,24 @@ function renderHours(){const now=new Date(),ny=nyDay(now),ve=tzParts(now,'Americ
  // minutos hasta la próxima apertura
  const nextOpen=()=>{let t=new Date(now);for(let i=0;i<10;i++){const d=nyDay(t);if(d.trading&&(i>0||m<O))return (i===0?O-m:(i*1440-m+O));t=new Date(t.getTime()+864e5)}return null};
  if(ny.trading&&m>=O&&m<C){cls='open';txt='Bolsa abierta';cd='Cierra en '+dur(C-m)}
- else{cls='closed';txt='Bolsa cerrada';const n=nextOpen();cd=(n?'Abre en '+dur(n):'')+(ny.hol?' · hoy es festivo':'')}
- $('#hours').innerHTML=`<div class="st ${cls}"><i></i>${txt}</div><div class="cd">${cd}</div>
- <h4>Horario EE. UU. · hora de Venezuela</h4><table><tr><td>Preapertura</td><td>${hm(240+diff)}</td></tr><tr><td>Apertura</td><td>${hm(O+diff)}</td></tr><tr><td>Cierre</td><td>${hm(C+diff)}</td></tr><tr><td>After-hours hasta</td><td>${hm(1200+diff)}</td></tr></table>
+ else{cls='closed';txt='Bolsa cerrada';const n=nextOpen();cd=n?'Abre en '+dur(n):''}
+ $('#hours').innerHTML=`<div class="st ${cls}"><i></i>${txt}</div>${ny.hol?'<div class="hol">FERIADO</div>':''}<div class="cd">${cd}</div>
+ <h4>Horario EE. UU. · hora de Venezuela</h4><table><tr><td>Apertura</td><td>${hm(O+diff)}</td></tr><tr><td>Cierre</td><td>${hm(C+diff)}</td></tr></table>
  <div class="nt">Lunes a viernes · ahora en Caracas ${hm(ve.min)}${NY_HALF[ny.p.date]?' · hoy cierra antes':''}</div>`}
 renderHours();setInterval(renderHours,30000);
-let lastBig=0;setInterval(()=>{if(document.hidden||loading)return;const syms=visibleSyms();if(!syms.length)return;
- // Las listas grandes (S&P 500) se refrescan cada 90 s para no saturar la fuente de datos
- if(syms.length>120){if(Date.now()-lastBig<90000)return;lastBig=Date.now()}load(syms,false)},30000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!loading)load(visibleSyms(),false)});
+// Actualización de precios: en vivo (30 s) o cada 5, 10, 15, 30 o 60 minutos, a elección de cada persona
+let rfMin=0.5,rfNext=0,lastBig=0;try{const v=localStorage.getItem('bs-refresh');if(v)rfMin=+v}catch(e){}
+$('#rfsel').value=String(rfMin);if(!$('#rfsel').value){rfMin=0.5;$('#rfsel').value='0.5'}
+function refreshAll(force){if(!$('#scan').hidden){loadMkt();loadHeatmap()}const syms=visibleSyms();
+ // Las listas grandes (S&P 500) en vivo se refrescan como mucho cada 90 s para no saturar la fuente de datos
+ if(syms.length&&!loading&&(force||rfMin>=5||syms.length<=120||Date.now()-lastBig>=90000)){if(syms.length>120)lastBig=Date.now();load(syms,false)}
+ rfNext=Date.now()+rfMin*60000;showNext()}
+function showNext(){$('#rfnx').textContent=rfMin<5?'Precios en vivo':'Próxima: '+new Date(rfNext).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}
+$('#rfsel').onchange=()=>{rfMin=+$('#rfsel').value;try{localStorage.setItem('bs-refresh',rfMin)}catch(e){}rfNext=Date.now()+rfMin*60000;showNext()};
+$('#rfnow').onclick=()=>refreshAll(true);
+rfNext=Date.now()+rfMin*60000;showNext();
+setInterval(()=>{if(!document.hidden&&Date.now()>=rfNext)refreshAll(false)},5000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!loading&&Date.now()>=rfNext)refreshAll(false)});
 renderMkt();loadMkt();loadHeatmap();
 load(listSyms(),true);
 </script></body></html>
