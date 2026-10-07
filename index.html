@@ -68,18 +68,19 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 #sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}
 .prog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:10px}.prog span{display:block;height:100%;background:var(--accent);transition:width .3s}
 @media(max-width:640px){header{padding:10px 14px}.hr{width:100%}main{padding:14px}nav{width:100%}nav button{flex:1;padding:8px 6px}.bar input,.bar select{flex:1 1 100%;min-width:0;width:100%}}
-.hero{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.hero{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.7fr) minmax(250px,.75fr);gap:24px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
 .hero h2{font-size:clamp(32px,5vw,54px);line-height:1.04;letter-spacing:-1.6px;font-weight:300;margin:0 0 16px}
 .hero h2 em{font-style:normal;font-weight:600;color:var(--z-green)}.hero h2 em.r{color:var(--z-red)}
 .hero p{font-size:17px;color:var(--muted);max-width:52ch;margin:0 0 24px}
 .cta{display:flex;gap:10px;flex-wrap:wrap}.cta .b{padding:12px 22px;font-size:15px;border-radius:999px}
 .stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}.stats b{display:block;font-size:24px;font-weight:300;letter-spacing:-.5px}.stats span{font-size:12px;color:var(--muted)}
-.opps{border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 18px 50px -24px rgba(0,0,0,.18)}
+.opps{border:1px solid var(--line);border-radius:16px;padding:14px;align-self:stretch;box-shadow:0 18px 50px -24px rgba(0,0,0,.18)}
 .opps .t{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;font-weight:700}.opps .t span{font-size:12px;font-weight:500;color:var(--muted)}
 .opp{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid var(--line);cursor:pointer}.opp:hover{background:#fafafa}
 .opp .n{flex:1;min-width:0}.opp .n b{display:block}.opp .n div{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
 .tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
+@media(max-width:1500px){.hero{grid-template-columns:minmax(0,1.6fr) minmax(240px,.8fr)}.hero>div:first-child{grid-column:1/-1}}
 @media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
 .more{text-align:center!important;padding:16px}
 
@@ -118,6 +119,17 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .mc .r1 b{font-size:13px;letter-spacing:.3px}.mc .r1 span{font-size:14px;font-variant-numeric:tabular-nums}
 .mc .r2{font-size:13px;margin-top:4px;font-variant-numeric:tabular-nums}.mc .r2 span{display:flex;gap:10px}
 .mc .r3{font-size:10px;font-weight:600;opacity:.85;margin-top:8px;letter-spacing:.3px;text-transform:uppercase}
+/* Mapa de calor estilo Finviz */
+.hm{background:#22262f;border-radius:14px;padding:10px;color:#fff;display:flex;flex-direction:column;min-width:0;align-self:stretch}
+.hmh{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;padding:2px 4px 8px}.hmh span{font-size:11px;color:#aab}
+.hmap{position:relative;flex:1;min-height:340px;background:#191c22;border-radius:6px;overflow:hidden}
+.hmap .sec{position:absolute;border:1px solid #191c22;box-sizing:border-box}
+.hmap .sec>b{position:absolute;left:3px;top:1px;font-size:9px;letter-spacing:.4px;text-transform:uppercase;color:#d7dbe3;z-index:2;white-space:nowrap;overflow:hidden;max-width:calc(100% - 6px);text-shadow:0 1px 1px #000}
+.hmap .t{position:absolute;box-sizing:border-box;border:1px solid #191c22;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;line-height:1.1;text-align:center}
+.hmap .t:hover{outline:2px solid #fff;z-index:3}
+.hmap .t b{font-weight:700}.hmap .t span{opacity:.9}
+.hmleg{display:flex;align-items:center;justify-content:center;gap:2px;font-size:10px;color:#aab;padding-top:8px}.hmleg i{width:26px;height:8px;display:block}.hmleg span{margin:0 6px}
+.opps .opp{padding:9px 2px;gap:8px}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}
 </style></head><body>
 <header><h1 class="brand"><svg class="logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="15" fill="#0b0b0c"/><g stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M15 40v14M24 35v16M33 37v12M42 28v18M51 24v18"/></g><rect x="12.5" y="43" width="5" height="8" rx="1.2" fill="#ef4444"/><rect x="21.5" y="38" width="5" height="10" rx="1.2" fill="#22c55e"/><rect x="30.5" y="40" width="5" height="7" rx="1.2" fill="#ef4444"/><rect x="39.5" y="31" width="5" height="12" rx="1.2" fill="#22c55e"/><rect x="48.5" y="27" width="5" height="12" rx="1.2" fill="#22c55e"/><path d="M9 31l9-8 6 5 9-11 7 5 11-11" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 10h8v8" fill="none" stroke="#22c55e" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Bag <span>Scanner</span></h1>
 <div class="hr"><span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando…</span></span>
@@ -129,7 +141,8 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
    <h2>Compra en <em>verde</em>.<br>Espera en <em class="r">rojo</em>.</h2>
    <p>Bag Scanner revisa en vivo cientos de acciones y ETFs, calcula sus medias móviles y su RSI y te dice con un solo color si es momento de comprar.</p>
   </div>
-  <div class="opps"><div class="t">Oportunidades ahora <span>zona verde · mejor score</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
+  <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
+  <div class="opps"><div class="t">Oportunidades ahora <span>zona verde</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
  </div>
  <div class="mk"><div class="mtabs" id="mtabs"></div><div class="mcards" id="mcards"></div></div>
  <div class="tools" id="tools">
@@ -295,14 +308,14 @@ function renderMkt(){$('#mtabs').innerHTML=MKTS.map((m,i)=>`<button data-m="${i}
 async function loadMkt(){const syms=MKTS[mTab][1].map(x=>x[0]);try{const r=await api('/api/quotes?symbols='+encodeURIComponent(syms.join(',')));r.forEach(q=>MQ[q.symbol]=q)}catch(e){}renderMkt()}
 function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=null&&x.score!=null);
  let pick=xs.filter(x=>x.zone==='green');if(pick.length<3)pick=pick.concat(xs.filter(x=>x.zone==='yellow'));
- pick=pick.sort((a,b)=>b.score-a.score).slice(0,4);
+ pick=pick.sort((a,b)=>b.score-a.score).slice(0,5);
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
 function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
- if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan')renderAll()}
+ if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan'){renderAll();requestAnimationFrame(renderHeatmap)}}
 // "Mis favoritos" sale de las estrellas que marca cada persona en su navegador
 function fillLists(){const v=$('#lst').value||curList;$('#lst').innerHTML=`<option value="favs">★ Mis favoritos (${ST.favs.length})</option>`+LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=v}
 fillLists();$('#lst').value=curList;
@@ -342,10 +355,38 @@ function drawChart(h){const W=900,H1=300,H2=110,P=48,n=h.close.length;const all=
  <circle cx="${X(n-1)}" cy="${Y(h.close[n-1])}" r="3.5" fill="var(--fg)"/><text x="${P}" y="${H1+10}">RSI 14</text><path d="${rd}" fill="none" stroke="var(--fg)" stroke-width="1.4"/>${months.join('')}</svg>`}
 // Actualización automática: cada 30 s refresca lo que estás viendo
 setInterval(()=>{if(!document.hidden&&!$('#scan').hidden)loadMkt()},30000);
+
+// Mapa de calor: rectángulos proporcionales a la capitalización, color según la variación del día
+const SECT={'Information Technology':'Tecnología','Health Care':'Salud','Financials':'Finanzas','Consumer Discretionary':'Consumo discrecional','Communication Services':'Comunicaciones','Industrials':'Industria','Consumer Staples':'Consumo básico','Energy':'Energía','Utilities':'Servicios públicos','Real Estate':'Inmobiliario','Materials':'Materiales'};
+function hmColor(c){if(c==null)return '#414554';const st=[[-3,[246,53,56]],[-2,[191,64,69]],[-1,[139,68,78]],[0,[65,69,84]],[1,[53,118,78]],[2,[47,158,79]],[3,[48,204,90]]];c=Math.max(-3,Math.min(3,c));
+ for(let i=1;i<st.length;i++)if(c<=st[i][0]){const[a,ca]=st[i-1],[b,cb]=st[i],t=(c-a)/(b-a);return 'rgb('+ca.map((v,k)=>Math.round(v+(cb[k]-v)*t)).join(',')+')'}return '#30cc5a'}
+// Treemap "squarified": reparte los elementos en filas para que los rectángulos sean lo más cuadrados posible
+function squarify(items,x,y,w,h){const out=[];let rest=items.slice(),total=rest.reduce((a,b)=>a+b.v,0);
+ while(rest.length){const short=Math.min(w,h),scale=w*h/total;let row=[],best=Infinity;
+  for(const it of rest){const r=row.concat([it]),sum=r.reduce((a,b)=>a+b.v,0)*scale,mx=Math.max(...r.map(z=>z.v))*scale,mn=Math.min(...r.map(z=>z.v))*scale;
+   const ratio=Math.max(short*short*mx/(sum*sum),sum*sum/(short*short*mn));if(ratio>best)break;best=ratio;row=r}
+  const rs=row.reduce((a,b)=>a+b.v,0),sideLen=rs*scale/short;let off=0;
+  row.forEach(it=>{const len=it.v*scale/sideLen;if(w>=h)out.push({it,x:x,y:y+off,w:sideLen,h:len});else out.push({it,x:x+off,y:y,w:len,h:sideLen});off+=len});
+  if(w>=h){x+=sideLen;w-=sideLen}else{y+=sideLen;h-=sideLen}rest=rest.slice(row.length);total-=rs}
+ return out}
+let HM=null;
+function renderHeatmap(){const el=$('#hmap');if(!el||!HM)return;const W=el.clientWidth,Hh=el.clientHeight;if(!W||!Hh)return;
+ const by={};HM.items.forEach(x=>{(by[x.sec]=by[x.sec]||[]).push(x)});
+ const secs=Object.entries(by).map(([k,xs])=>({k,xs:xs.sort((a,b)=>b.cap-a.cap),v:xs.reduce((a,b)=>a+b.cap,0)})).sort((a,b)=>b.v-a.v);
+ let html='';squarify(secs,0,0,W,Hh).forEach(({it:sec,x,y,w,h})=>{
+  html+=`<div class="sec" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px"><b>${esc(SECT[sec.k]||sec.k)}</b></div>`;
+  const pad=h>40&&w>40?12:0;
+  squarify(sec.xs.map(s=>({...s,v:s.cap})),x,y+pad,w,h-pad).forEach(({it:s,x,y,w,h})=>{const a=Math.min(w,h),fs=Math.max(8,Math.min(22,a/3.6));
+   const lab=a>=22&&w>=26?`<b style="font-size:${fs}px">${esc(s.s)}</b>${a>=34?`<span style="font-size:${Math.max(8,fs*.6)}px">${s.chg>=0?'+':''}${f(s.chg)}%</span>`:''}`:'';
+   html+=`<div class="t" data-s="${esc(s.s)}" title="${esc(s.s+' · '+s.n+' · '+(s.chg>=0?'+':'')+f(s.chg)+'%')}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${hmColor(s.chg)}">${lab}</div>`})});
+ el.innerHTML=html;el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
+async function loadHeatmap(){try{HM=await api('/api/heatmap');$('#hmst').textContent=(HM.source==='cap'?'tamaño = capitalización':'mismo peso por empresa')+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});renderHeatmap()}catch(e){$('#hmst').textContent='No disponible'}}
+let hmT;window.addEventListener('resize',()=>{clearTimeout(hmT);hmT=setTimeout(renderHeatmap,150)});
+setInterval(()=>{if(!document.hidden&&!$('#scan').hidden)loadHeatmap()},60000);
 let lastBig=0;setInterval(()=>{if(document.hidden||loading)return;const syms=visibleSyms();if(!syms.length)return;
  // Las listas grandes (S&P 500) se refrescan cada 90 s para no saturar la fuente de datos
  if(syms.length>120){if(Date.now()-lastBig<90000)return;lastBig=Date.now()}load(syms,false)},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!loading)load(visibleSyms(),false)});
-renderMkt();loadMkt();
+renderMkt();loadMkt();loadHeatmap();
 load(listSyms(),true);
 </script></body></html>

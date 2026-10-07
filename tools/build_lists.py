@@ -23,3 +23,9 @@ lists = [
 out = "// Generado por tools/build_lists.py\nwindow.MARKET_LISTS = " + json.dumps(lists, separators=(",", ":")) + ";\n"
 open(os.path.join(HERE, "..", "lists.js"), "w", encoding="utf-8").write(out)
 print({l["name"]: len(l["symbols"]) for l in lists})
+
+# Sectores del S&P 500 para el mapa de calor (api/heatmap.js)
+import csv as _csv, os as _os
+_rows = list(_csv.DictReader(open(_os.path.join(_os.path.dirname(__file__), "sp500.csv"))))
+json.dump([[r["Symbol"].replace(".", "-"), r["GICS Sector"], r["Security"]] for r in _rows],
+          open(_os.path.join(_os.path.dirname(__file__), "..", "api", "_sp500.json"), "w"), separators=(",", ":"), ensure_ascii=False)
