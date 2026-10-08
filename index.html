@@ -81,7 +81,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
 .tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
 @media(max-width:1500px){.hero{grid-template-columns:minmax(240px,.8fr) minmax(0,1.6fr)}.hero>div:first-child{grid-column:1/-1}}
-@media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
+@media(max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
 .more{text-align:center!important;padding:16px}
 
 /* Resumen del mercado */
@@ -102,14 +102,14 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 [data-v=c] header{background:var(--brand);border:none;color:#fff;backdrop-filter:none}[data-v=c] .brand,[data-v=c] .brand span{color:#000;font-weight:800}[data-v=c] .live{display:none}[data-v=c] .dot,[data-v=c] .dot.on{background:#000}
 [data-v=c] nav{background:rgba(0,0,0,.12)}[data-v=c] nav button{color:#000;font-weight:700}[data-v=c] nav button.on{background:#fff;color:#000}
 [data-v=c] main .hero{padding:22px}}
-@media(max-width:999px){[data-v=c] header{position:static}}
+@media(max-width:999px){[data-v=c] header{position:static}html,body{overflow-x:hidden}main{overflow-x:clip}}
 @media(max-width:640px){
 [data-v=c] header{padding:14px 12px 16px;gap:12px}.logo{width:44px;height:44px}a.brand{font-size:21px}
 [data-v=c] main{padding:12px}[data-v=c] main .hero{padding:16px;border-radius:16px}.hero h2{font-size:34px}
 .hours{padding:12px 14px;font-size:14px}.side{gap:10px}
 .side .lk a{font-size:12px;padding:8px 10px;min-height:44px}
 #tscan th,#tscan td,#tport th,#tport td{padding:9px 6px;font-size:13px}
-#tscan tr:not(:has(td[colspan]))>:nth-child(3),#tscan tr:not(:has(td[colspan]))>:nth-child(7),#tscan tr:not(:has(td[colspan]))>:nth-child(8),#tscan tr:not(:has(td[colspan]))>:nth-child(9),#tscan tr:not(:has(td[colspan]))>:nth-child(11),#tscan tr:not(:has(td[colspan]))>:nth-child(10){display:none}#tscan td .mut{display:none}#tscan td:last-child>:not(.pill){display:none}#tscan .za{font-size:10px}#tscan .star{padding:9px 2px 9px 6px;width:22px}#tscan .nm{max-width:78px;overflow:hidden;text-overflow:ellipsis;font-size:11px}#tscan th{font-size:10px;letter-spacing:0;padding:8px 4px}#tscan td{padding:9px 4px;font-size:12px}#tscan .zp{padding:1px 5px}#tscan .pill{min-width:32px;padding:2px 5px}#tscan th.star,#tscan td.star{padding-left:6px;padding-right:0;width:20px}
+#tscan tr:not(:has(td[colspan]))>:nth-child(3),#tscan tr:not(:has(td[colspan]))>:nth-child(7),#tscan tr:not(:has(td[colspan]))>:nth-child(8),#tscan tr:not(:has(td[colspan]))>:nth-child(9),#tscan tr:not(:has(td[colspan]))>:nth-child(11),#tscan tr:not(:has(td[colspan]))>:nth-child(10){display:none}#tscan td .mut{display:none}#tscan td:last-child>:not(.pill){display:none}#tscan .za{font-size:10px}#tscan .star{padding:9px 2px 9px 6px;width:22px}#tscan td.l .nm{max-width:72px;overflow:hidden;text-overflow:ellipsis;font-size:11px}#tscan th{font-size:10px;letter-spacing:0;padding:8px 4px}#tscan td{padding:9px 3px;font-size:12px}#tscan .zp{padding:1px 5px}#tscan .pill{min-width:32px;padding:2px 5px}#tscan th.star,#tscan td.star{padding-left:6px;padding-right:0;width:20px}
 #tscan .sym+div,#tscan td.l div{max-width:120px;overflow:hidden;text-overflow:ellipsis}
 .mcards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .hmap{min-height:300px}
@@ -144,7 +144,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .hmap .t:hover{outline:2px solid #fff;z-index:3}
 .hmap .t b{font-weight:700}.hmap .t span{opacity:.9}
 .hmleg{display:flex;align-items:center;justify-content:center;gap:2px;font-size:10px;color:#aab;padding-top:8px}.hmleg i{width:26px;height:8px;display:block}.hmleg span{margin:0 6px}
-.opps .opp{padding:5px 2px;gap:8px}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}.opps .za{margin-top:1px;font-size:10px}
+.opps .opp{padding:5px 2px;gap:8px}.hero>*{min-width:0}.opp .n{min-width:0;flex:1}.opp .n div,.opp .n b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}.opps .za{margin-top:1px;font-size:10px}
 /* Horario de la bolsa de EE. UU. en hora de Venezuela */
 .hours{background:#fff;color:#000;border-radius:14px;padding:18px;font-size:15px;line-height:1.5;font-weight:700}
 .hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
