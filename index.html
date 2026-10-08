@@ -68,7 +68,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 #sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}
 .prog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:10px}.prog span{display:block;height:100%;background:var(--accent);transition:width .3s}
 @media(max-width:640px){header{padding:10px 14px}.hr{width:100%}main{padding:14px}nav{width:100%}nav button{flex:1;padding:8px 6px}.bar input,.bar select{flex:1 1 100%;min-width:0;width:100%}}
-.hero{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(0,1.7fr) minmax(250px,.75fr);gap:24px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
+.hero{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(250px,.75fr) minmax(0,1.7fr);gap:24px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
 .hero h2{font-size:clamp(32px,5vw,54px);line-height:1.04;letter-spacing:-1.4px;font-weight:700;margin:0 0 16px}
 .hero h2 em{font-style:normal;font-weight:600;color:var(--z-green)}.hero h2 em.r{color:var(--z-red)}
 .hero p{font-size:17px;color:var(--muted);max-width:52ch;margin:0 0 24px}
@@ -80,7 +80,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .opp .n{flex:1;min-width:0}.opp .n b{display:block}.opp .n div{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
 .tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
-@media(max-width:1500px){.hero{grid-template-columns:minmax(0,1.6fr) minmax(240px,.8fr)}.hero>div:first-child{grid-column:1/-1}}
+@media(max-width:1500px){.hero{grid-template-columns:minmax(240px,.8fr) minmax(0,1.6fr)}.hero>div:first-child{grid-column:1/-1}}
 @media(max-width:860px){.hero{grid-template-columns:1fr;gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
 .more{text-align:center!important;padding:16px}
 
@@ -160,8 +160,8 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
    <h2>Compra en <em>verde</em>.<br>Espera en <em class="r">rojo</em>.</h2>
    <p>Bag Scanner revisa en vivo cientos de acciones y ETFs, calcula sus medias móviles y su RSI y te dice con un solo color si es momento de comprar.</p>
   </div>
-  <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
+  <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
  </div>
  <div class="mk"><div class="mtabs" id="mtabs"></div><div class="mcards" id="mcards"></div></div>
  <div class="tools" id="tools">
