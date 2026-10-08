@@ -106,7 +106,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 [data-v=c] .opps{box-shadow:none;background:var(--brand);border-color:var(--brand);color:#000}
 [data-v=c] .opps .t,[data-v=c] .opps .t span,[data-v=c] .opps .n b{color:#000;font-weight:700}[data-v=c] .opps .n div{color:#06323b}
 [data-v=c] .opp{border-top-color:rgba(0,0,0,.18)}[data-v=c] .opp:hover{background:rgba(255,255,255,.15)}[data-v=c] .opps .za{color:#000}
-[data-v=c] .opps .zp{background:#fff}[data-v=c] .opps .zp.z-green{background:#86efac}[data-v=c] .opps .zp.z-red{background:#fca5a5}[data-v=c] .opps .pill{background:#000;border-color:#000;color:#fff}[data-v=c] .opps .empty{color:#000;border-top-color:rgba(0,0,0,.18)}
+[data-v=c] .opps .zp{background:#fff}[data-v=c] .opps .zp.z-green{background:#86efac}[data-v=c] .opps .zp.z-red{background:#fca5a5}[data-v=c] .opps .zp.z-yellow{background:#fde68a}[data-v=c] .opps .pill{background:#000;border-color:#000;color:#fff}[data-v=c] .opps .empty{color:#000;border-top-color:rgba(0,0,0,.18)}
 [data-v=c] .wrap{background:#fff}
 [data-v=c] .tools{background:#fff;border:1px solid var(--line)}
 .bar .right{margin-left:auto}@media(max-width:640px){.bar .right{margin-left:0}}
@@ -132,7 +132,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .hmap .t:hover{outline:2px solid #fff;z-index:3}
 .hmap .t b{font-weight:700}.hmap .t span{opacity:.9}
 .hmleg{display:flex;align-items:center;justify-content:center;gap:2px;font-size:10px;color:#aab;padding-top:8px}.hmleg i{width:26px;height:8px;display:block}.hmleg span{margin:0 6px}
-.opps .opp{padding:9px 2px;gap:8px}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}
+.opps .opp{padding:5px 2px;gap:8px}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}.opps .za{margin-top:1px;font-size:10px}
 /* Horario de la bolsa de EE. UU. en hora de Venezuela */
 .hours{background:#fff;color:#000;border-radius:14px;padding:18px;font-size:15px;line-height:1.5;font-weight:700}
 .hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
@@ -326,8 +326,8 @@ function renderMkt(){$('#mtabs').innerHTML=MKTS.map((m,i)=>`<button data-m="${i}
   return `<div class="mc ${up?'up':'down'}"><div class="r1"><b>${esc(n)}</b><span>${f(q.price,/=X$/.test(s)?4:2)}${bond?'%':''}</span></div><div class="r2"><span>${up?'▲':'▼'}</span><span>${up?'+':''}${f(q.change,/=X$/.test(s)?4:2)} <span>${up?'+':''}${f(q.change_pct)}%</span></span></div><div class="r3">Último · ${t}${q.open===false?' · cerrado':''}</div></div>`}).join('')}
 async function loadMkt(){const syms=MKTS[mTab][1].map(x=>x[0]);try{const r=await api('/api/quotes?symbols='+encodeURIComponent(syms.join(',')));r.forEach(q=>MQ[q.symbol]=q)}catch(e){}renderMkt()}
 function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=null&&x.score!=null);
- let pick=xs.filter(x=>x.zone==='green');if(pick.length<3)pick=pick.concat(xs.filter(x=>x.zone==='yellow'));
- pick=pick.sort((a,b)=>b.score-a.score).slice(0,5);
+ let pick=xs.filter(x=>x.zone==='green');pick=pick.sort((a,b)=>b.score-a.score);if(pick.length<10)pick=pick.concat(xs.filter(x=>x.zone==='yellow').sort((a,b)=>b.score-a.score));
+ pick=pick.slice(0,10);
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
@@ -399,7 +399,7 @@ function renderHeatmap(){const el=$('#hmap');if(!el||!HM)return;const W=el.clien
    html+=`<div class="t" data-s="${esc(s.s)}" title="${esc(s.s+' · '+s.n+' · '+(s.chg>=0?'+':'')+f(s.chg)+'%')}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${hmColor(s.chg)}">${lab}</div>`})});
  el.innerHTML=html;el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
 async function loadHeatmap(){try{HM=await api('/api/heatmap');$('#hmst').textContent=(HM.source==='cap'?'tamaño = capitalización':'mismo peso por empresa')+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});renderHeatmap()}catch(e){$('#hmst').textContent='No disponible'}}
-let hmT;window.addEventListener('resize',()=>{clearTimeout(hmT);hmT=setTimeout(renderHeatmap,150)});
+let hmT,hmWH='';const hmRe=()=>{clearTimeout(hmT);hmT=setTimeout(()=>{const e=$('#hmap');const k=e?e.clientWidth+'x'+e.clientHeight:'';if(k!==hmWH){hmWH=k;renderHeatmap()}},150)};window.addEventListener('resize',hmRe);if(window.ResizeObserver&&$('#hmap'))new ResizeObserver(hmRe).observe($('#hmap'));
 
 // Horario de NYSE/Nasdaq (9:30–16:00 hora de Nueva York) convertido a hora de Venezuela (Caracas, UTC−4 todo el año)
 const NY_HOL={'2026-01-01':1,'2026-01-19':1,'2026-02-16':1,'2026-04-03':1,'2026-05-25':1,'2026-06-19':1,'2026-07-03':1,'2026-09-07':1,'2026-11-26':1,'2026-12-25':1,
