@@ -65,7 +65,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .gt{width:auto;border:1px solid var(--line)}.gt td,.gt th{white-space:normal;text-align:left;vertical-align:top}
 .note{font-size:12px;color:var(--muted);margin-top:14px;max-width:80ch}
 .err{color:var(--down)}.x{border:none;background:none;color:var(--muted);cursor:pointer;font-size:16px}
-#sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}
+#sugs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}#sugs button{font-size:12px}#sugs button.on{background:var(--brand);border-color:var(--brand);color:#fff}#sclr{font-weight:700}
 .prog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-bottom:10px}.prog span{display:block;height:100%;background:var(--accent);transition:width .3s}
 @media(max-width:640px){header{padding:10px 14px}.hr{width:100%}main{padding:14px}nav{width:100%}nav button{flex:1;padding:8px 6px}.bar input,.bar select{flex:1 1 100%;min-width:0;width:100%}}
 .hero{display:grid;grid-template-columns:minmax(260px,.9fr) minmax(250px,.75fr) minmax(0,1.7fr);gap:24px;align-items:center;padding:36px 0 40px;border-bottom:1px solid var(--line);margin-bottom:28px}
@@ -260,7 +260,8 @@ async function fetchSymbols(syms,onProgress){
  async function worker(){while(idx<chunks.length){const c=chunks[idx++];try{const r=await api('/api/analyze?symbols='+encodeURIComponent(c.join(',')));r.forEach(x=>{const old=DATA[x.symbol];x._chg=old&&old.price!=null&&x.price!==old.price;if(x.error&&old&&!old.error)return;DATA[x.symbol]=x})}catch(e){c.forEach(s=>{if(!DATA[s])DATA[s]={symbol:s,error:e.message}})}done+=c.length;onProgress&&onProgress(done,syms.length)}}
  await Promise.all([worker(),worker(),worker(),worker()]);
 }
-function listSyms(){if(curList==='favs')return ST.favs.slice();const l=LISTS.find(x=>x.id===curList)||LISTS[0];return l?l.symbols:[]}
+let srchSyms=null;
+function listSyms(){if(srchSyms)return srchSyms;if(curList==='favs')return ST.favs.slice();const l=LISTS.find(x=>x.id===curList)||LISTS[0];return l?l.symbols:[]}
 function visibleSyms(){const t=$('#port').hidden?($('#det').hidden?listSyms():[$('#ds').value.trim().toUpperCase()].filter(Boolean)):[...new Set(ST.favs.concat(ST.portfolio.map(p=>p.symbol)))];return t}
 function setLive(){const xs=Object.values(DATA).filter(x=>!x.error);const open=xs.some(x=>x.open);$('#dot').classList.toggle('on',open);
  $('#upd').textContent=(open?'En vivo':'Mercado cerrado')+' · '+new Date().toLocaleTimeString('es-ES')}
@@ -285,7 +286,7 @@ function bind(root,rerender){
  root.querySelectorAll('[data-fav]').forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(b.dataset.fav)})}
 const PAGE=100;let shown=PAGE;
 function renderScan(){
-const fl=$('#flt').value,tx=$('#flttxt').value.trim().toLowerCase();
+const fl=srchSyms?'all':$('#flt').value,tx=srchSyms?'':$('#flttxt').value.trim().toLowerCase();
  let rows=listSyms().map(s=>DATA[s]||{symbol:s});
  rows=rows.filter(x=>{if(tx&&!(x.symbol.toLowerCase().includes(tx)||(x.name||'').toLowerCase().includes(tx)))return false;
   if(fl==='all')return true;if(x.error||x.price==null)return false;
@@ -338,11 +339,13 @@ function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.t
 // "Mis favoritos" sale de las estrellas que marca cada persona en su navegador
 function fillLists(){const v=$('#lst').value||curList;$('#lst').innerHTML=`<option value="favs">★ Mis favoritos (${ST.favs.length})</option>`+LISTS.map(l=>`<option value="${l.id}">${esc(l.name)} (${l.symbols.length})</option>`).join('');$('#lst').value=v}
 fillLists();$('#lst').value=curList;
-$('#lst').onchange=()=>{curList=$('#lst').value;shown=PAGE;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
+$('#lst').onchange=()=>{srchSyms=null;$('#sugs').innerHTML='';curList=$('#lst').value;shown=PAGE;try{localStorage.setItem('bolsa-list',curList)}catch(e){}renderScan();const need=listSyms().filter(s=>!DATA[s]);load(need.length?need:listSyms(),true)};
 const refilter=()=>{shown=PAGE;renderAll()};$('#flt').onchange=refilter;$('#flttxt').oninput=refilter;
-async function doSearch(){const q=$('#q').value.trim();if(!q)return;$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
+function showOnly(sym){srchSyms=[sym];shown=PAGE;$('#sugs').querySelectorAll('[data-d]').forEach(b=>b.classList.toggle('on',b.dataset.d===sym));renderScan();load([sym],false);$('#tscan').scrollIntoView({behavior:'smooth',block:'nearest'})}
+function clearSearch(){if(!srchSyms)return;srchSyms=null;$('#sugs').innerHTML='';$('#q').value='';shown=PAGE;renderScan()}
+async function doSearch(){const q=$('#q').value.trim();if(!q){clearSearch();return}$('#sugs').innerHTML='<span class="mut">Buscando…</span>';
  try{const r=await api('/api/search?q='+encodeURIComponent(q));$('#sugs').innerHTML=r.length?r.map(x=>`<span><button class="b" data-d="${esc(x.symbol)}">${esc(x.symbol)} · ${esc(x.name)} (${esc(x.exchange)})</button> <button class="fav ${isFav(x.symbol)?'on':''}" data-sf="${esc(x.symbol)}" aria-label="Favorito">${isFav(x.symbol)?'★':'☆'}</button></span>`).join(''):'<span class="mut">Sin resultados</span>';
- $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>detail(b.dataset.d));
+ $('#sugs').querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>showOnly(b.dataset.d));if(r.length){$('#sugs').insertAdjacentHTML('beforeend','<button class="b" id="sclr">✕ Ver lista completa</button>');$('#sclr').onclick=clearSearch;showOnly(r[0].symbol)}
  $('#sugs').querySelectorAll('[data-sf]').forEach(b=>b.onclick=()=>{toggleFav(b.dataset.sf);b.classList.toggle('on');b.textContent=isFav(b.dataset.sf)?'★':'☆';if(!DATA[b.dataset.sf])load([b.dataset.sf],false)})}
  catch(e){$('#sugs').innerHTML='<span class="err">No se pudo buscar: '+esc(e.message)+'</span>'}}
 $('#srch').onclick=doSearch;
