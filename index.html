@@ -80,7 +80,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .opp .n{flex:1;min-width:0}.opp .n b{display:block}.opp .n div{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .opp .r{text-align:right}.opps .empty{color:var(--muted);font-size:13px;padding:14px 0;border-top:1px solid var(--line)}
 .tools{background:#f7f7f7;border-radius:16px;padding:14px;margin-bottom:14px}.tools .bar:last-child{margin-bottom:0}.tools input,.tools select{background:#fff}
-@media(max-width:1500px){.hero{grid-template-columns:minmax(240px,.8fr) minmax(0,1.6fr)}.hero>div:first-child{grid-column:1/-1}}
+@media(max-width:1500px){.hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.hero>.hm{grid-column:1/-1}.hero .hmap{min-height:380px}}
 @media(max-width:860px){.hero{grid-template-columns:minmax(0,1fr);gap:28px;padding:16px 0 28px}.hero p{font-size:15px}}
 .more{text-align:center!important;padding:16px}
 
@@ -144,7 +144,16 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .hmap .t:hover{outline:2px solid #fff;z-index:3}
 .hmap .t b{font-weight:700}.hmap .t span{opacity:.9}
 .hmleg{display:flex;align-items:center;justify-content:center;gap:2px;font-size:10px;color:#aab;padding-top:8px}.hmleg i{width:26px;height:8px;display:block}.hmleg span{margin:0 6px}
-.opps .opp{padding:5px 2px;gap:8px}.hero>*{min-width:0}.opp .n{min-width:0;flex:1}.opp .n div,.opp .n b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}.opps .za{margin-top:1px;font-size:10px}
+.opps .opp{padding:5px 2px;gap:8px}.hero>*{min-width:0}
+.dow{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;align-self:stretch;display:flex;flex-direction:column;min-height:0}
+.dow .t{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;color:#000;margin-bottom:6px}.dow .t span{font-size:12px;font-weight:600;color:var(--muted)}
+.dleg{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-bottom:8px}.dleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}.dleg .g{background:#86efac}.dleg .y{background:#fde68a}
+#dowl{overflow-y:auto;flex:1;min-height:0;max-height:560px}
+.dw{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px}
+.dw b{display:block;font-size:14px;color:#000}.dw .n{min-width:0}.dw .n div{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dw .p{font-weight:800;font-size:13px;padding:1px 7px;border-radius:7px;font-variant-numeric:tabular-nums}.dw .d{font-size:12px;font-weight:800;color:#991b1b;min-width:54px;text-align:right}
+.dw.g{background:#dcfce7}.dw.g .p{background:#86efac;color:#14532d}.dw.y .p{background:#fde68a;color:#854d0e}
+.dow .empty{color:var(--muted);font-size:13px;padding:14px 0}.opp .n{min-width:0;flex:1}.opp .n div,.opp .n b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.opps .opp .n div{font-size:11px}.opps .pill{min-width:34px;padding:1px 6px;font-size:12px}.opps .zp{font-size:13px;padding:1px 6px}.opps .za{margin-top:1px;font-size:10px}
 /* Horario de la bolsa de EE. UU. en hora de Venezuela */
 .hours{background:#fff;color:#000;border-radius:14px;padding:18px;font-size:15px;line-height:1.5;font-weight:700}
 .hours .st{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;margin-bottom:2px}.hours .st i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
@@ -168,10 +177,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 <main>
 <section id="scan">
  <div class="hero">
-  <div>
-   <h2>Compra en <em>verde</em>.<br>Espera en <em class="r">rojo</em>.</h2>
-   <p>Bag Scanner revisa en vivo cientos de acciones y ETFs, calcula sus medias móviles y su RSI y te dice con un solo color si es momento de comprar.</p>
-  </div>
+  <div class="dow"><div class="t">Dow Jones · bajo la MM20 <span id="dowc"></span></div><div class="dleg"><span><i class="g"></i>Verde: lista para swing</span><span><i class="y"></i>Bajo MM20</span><span style="margin-left:auto">% bajo la MM20</span></div><div id="dowl"><div class="empty">Revisando las 30 del Dow…</div></div></div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
   <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
  </div>
@@ -342,9 +348,17 @@ function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=
  let pick=xs.filter(x=>x.zone==='green');pick=pick.sort((a,b)=>b.score-a.score);if(pick.length<10)pick=pick.concat(xs.filter(x=>x.zone==='yellow').sort((a,b)=>b.score-a.score));
  pick=pick.slice(0,10);
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
+// Cuadro de swing: las 30 del Dow Jones con el precio por debajo de su media de 20 días
+const DOW=(LISTS.find(l=>l.id==='dow30')||{symbols:[]}).symbols;let dowT=0;
+async function loadDow(){if(Date.now()-dowT<60000)return;dowT=Date.now();await fetchSymbols(DOW,()=>renderAll());renderAll()}
+function renderDow(){const el=$('#dowl');if(!el)return;const xs=DOW.map(s=>DATA[s]).filter(x=>x&&!x.error&&x.price!=null&&x.dist&&x.dist['20']!=null);
+ const below=xs.filter(x=>x.dist['20']<0).sort((a,b)=>(a.zone==='green'?0:1)-(b.zone==='green'?0:1)||a.dist['20']-b.dist['20']);
+ $('#dowc').textContent=xs.length?`${below.length} de ${DOW.length}`:'';
+ el.innerHTML=below.length?below.map(x=>`<div class="dw ${x.zone==='green'?'g':'y'}" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name||'')}</div></div><span class="p">${f(x.price)}</span><span class="d">${sg(x.dist['20'])}</span></div>`).join(''):`<div class="empty">${xs.length?'Ninguna del Dow está por debajo de su MM20 ahora.':'Revisando las 30 del Dow…'}</div>`;
+ el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
-function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
+function renderNow(){if(!$('#scan').hidden){renderScan();renderOpps();renderDow()}if(!$('#port').hidden)renderPort();if(!$('#det').hidden&&curDetail)renderDetailHead()}
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{tab(b.dataset.t);if(innerWidth<1000)$('main').scrollIntoView({behavior:'smooth'})});
 function tab(t){document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));['scan','port','det'].forEach(id=>$('#'+id).hidden=id!==t);
  if(t==='port'){renderPort();const need=visibleSyms().filter(s=>!DATA[s]);if(need.length)load(need,false)}if(t==='scan'){renderAll();requestAnimationFrame(renderHeatmap)}}
@@ -438,11 +452,12 @@ function renderHours(){const now=new Date(),ny=nyDay(now),ve=tzParts(now,'Americ
 renderHours();setInterval(renderHours,30000);
 // Actualización de precios en vivo cada 30 s
 let rfMin=0.5,rfNext=0,lastBig=0;
-function refreshAll(force){if(!$('#scan').hidden){loadMkt();loadHeatmap()}const syms=visibleSyms();
+function refreshAll(force){if(!$('#scan').hidden){loadMkt();loadHeatmap();loadDow()}const syms=visibleSyms();
  // Las listas grandes (S&P 500) en vivo se refrescan como mucho cada 90 s para no saturar la fuente de datos
  if(syms.length&&!loading&&(force||rfMin>=5||syms.length<=120||Date.now()-lastBig>=90000)){if(syms.length>120)lastBig=Date.now();load(syms,false)}
  rfNext=Date.now()+rfMin*60000}
 rfNext=Date.now()+rfMin*60000;
+setTimeout(loadDow,800);
 setInterval(()=>{if(!document.hidden&&Date.now()>=rfNext)refreshAll(false)},5000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!loading&&Date.now()>=rfNext)refreshAll(false)});
 renderMkt();loadMkt();loadHeatmap();
