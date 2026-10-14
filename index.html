@@ -177,7 +177,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 <main>
 <section id="scan">
  <div class="hero">
-  <div class="dow"><div class="t">Dow Jones · bajo la MM20 <span id="dowc"></span></div><div class="dleg"><span><i class="g"></i>Verde: lista para swing</span><span><i class="y"></i>Bajo MM20</span><span style="margin-left:auto">% bajo la MM20</span></div><div id="dowl"><div class="empty">Revisando las 30 del Dow…</div></div></div>
+  <div class="dow"><div class="t">Dow Jones · canal alcista bajo la MM20 <span id="dowc"></span></div><div class="dleg"><span><i class="g"></i>Verde: lista para swing (sobre MM50)</span><span><i class="y"></i>Bajo MM50</span><span style="margin-left:auto">% bajo la MM20</span></div><div id="dowl"><div class="empty">Revisando las 30 del Dow…</div></div></div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
   <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
  </div>
@@ -350,11 +350,15 @@ function renderOpps(){const xs=Object.values(DATA).filter(x=>!x.error&&x.price!=
  $('#opps').innerHTML=pick.length?pick.map(x=>`<div class="opp" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name)}</div></div><div class="r"><span class="zp z-${x.zone}">${f(x.price)}</span><div class="za">${zoneAct[x.zone]}</div></div>${pill(x.score)}</div>`).join(''):'<div class="empty">'+(loading?'Escaneando el mercado…':'Ahora mismo ningún valor de la lista está en zona verde o amarilla.')+'</div>';bind($('#opps'))}
 // Cuadro de swing: las 30 del Dow Jones con el precio por debajo de su media de 20 días
 const DOW=(LISTS.find(l=>l.id==='dow30')||{symbols:[]}).symbols;let dowT=0;
+// Canal alcista: precio sobre la MM200 y medias ordenadas MM50 > MM100 > MM200
+const upCh=x=>{const m=x.sma||{};return m['50']!=null&&m['100']!=null&&m['200']!=null&&x.dist['200']>0&&m['50']>m['100']&&m['100']>m['200']};
 async function loadDow(){if(Date.now()-dowT<60000)return;dowT=Date.now();await fetchSymbols(DOW,()=>renderAll());renderAll()}
 function renderDow(){const el=$('#dowl');if(!el)return;const xs=DOW.map(s=>DATA[s]).filter(x=>x&&!x.error&&x.price!=null&&x.dist&&x.dist['20']!=null);
- const below=xs.filter(x=>x.dist['20']<0).sort((a,b)=>(a.zone==='green'?0:1)-(b.zone==='green'?0:1)||a.dist['20']-b.dist['20']);
+ // Verde: retroceso sano, bajo la MM20 pero aún sobre la MM50. Amarillo: ya perdió la MM50 (sigue sobre la MM200)
+ const sw=x=>x.dist['50']!=null&&x.dist['50']>=0;
+ const below=xs.filter(x=>x.dist['20']<0&&upCh(x)).sort((a,b)=>(sw(a)?0:1)-(sw(b)?0:1)||a.dist['20']-b.dist['20']);
  $('#dowc').textContent=xs.length?`${below.length} de ${DOW.length}`:'';
- el.innerHTML=below.length?below.map(x=>`<div class="dw ${x.zone==='green'?'g':'y'}" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name||'')}</div></div><span class="p">${f(x.price)}</span><span class="d">${sg(x.dist['20'])}</span></div>`).join(''):`<div class="empty">${xs.length?'Ninguna del Dow está por debajo de su MM20 ahora.':'Revisando las 30 del Dow…'}</div>`;
+ el.innerHTML=below.length?below.map(x=>`<div class="dw ${sw(x)?'g':'y'}" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name||'')}</div></div><span class="p">${f(x.price)}</span><span class="d">${sg(x.dist['20'])}</span></div>`).join(''):`<div class="empty">${xs.length?'Ahora ninguna del Dow está bajo su MM20 dentro de un canal alcista.':'Revisando las 30 del Dow…'}</div>`;
  el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
