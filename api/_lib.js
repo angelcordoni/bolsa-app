@@ -23,10 +23,11 @@ async function chart(symbol, range) {
       const res = j.chart && j.chart.result && j.chart.result[0];
       if (!res) throw new Error((j.chart && j.chart.error && j.chart.error.description) || "símbolo no encontrado");
       const ts = res.timestamp || [];
-      const cl = (((res.indicators || {}).quote || [{}])[0].close) || [];
-      const t = [], c = [];
-      ts.forEach((x, i) => { if (cl[i] != null) { t.push(x); c.push(+cl[i]); } });
-      return { meta: res.meta || {}, ts: t, closes: c };
+      const q = ((res.indicators || {}).quote || [{}])[0] || {};
+      const cl = q.close || [], op = q.open || [];
+      const t = [], c = [], o = [];
+      ts.forEach((x, i) => { if (cl[i] != null) { t.push(x); c.push(+cl[i]); o.push(op[i] != null ? +op[i] : null); } });
+      return { meta: res.meta || {}, ts: t, closes: c, opens: o };
     } catch (e) { last = e; }
   }
   throw last;
@@ -50,8 +51,9 @@ function marketOpen(meta) {
 async function live(symbol) {
   const hit = liveCache.get(symbol);
   if (hit && Date.now() - hit.at < LIVE_MS) return hit.data;
-  const { meta } = await chart(symbol, "1d");
+  const { meta, opens } = await chart(symbol, "1d");
   const data = {
+    dayOpen: meta.regularMarketOpen != null ? meta.regularMarketOpen : (opens && opens.length ? opens[opens.length - 1] : null),
     price: meta.regularMarketPrice,
     prevClose: meta.chartPreviousClose != null ? meta.chartPreviousClose : meta.previousClose,
     time: meta.regularMarketTime,
@@ -122,13 +124,17 @@ async function analyze(symbol, withHistory = false) {
   const [h, lv] = await Promise.all([history(symbol), live(symbol).catch(() => null)]);
   const { meta, ts: ts0, closes } = h;
   if (!closes.length) throw new Error("sin datos de precio");
-  const ts = ts0.slice(), series = closes.slice();
+  const ts = ts0.slice(), series = closes.slice(), opens = (h.opens || []).slice();
   const price = lv && lv.price != null ? +lv.price : series[series.length - 1];
   const t = lv && lv.time ? lv.time : ts[ts.length - 1];
   const tz = meta.exchangeTimezoneName;
   // El precio en vivo sustituye la vela de hoy o se añade como vela nueva
-  if (dayKey(t, tz) === dayKey(ts[ts.length - 1], tz)) series[series.length - 1] = price;
-  else { series.push(price); ts.push(t); }
+  const dOpen = lv && lv.dayOpen != null ? +lv.dayOpen : null;
+  if (dayKey(t, tz) === dayKey(ts[ts.length - 1], tz)) { series[series.length - 1] = price; if (dOpen != null) opens[opens.length - 1] = dOpen; }
+  else { series.push(price); ts.push(t); opens.push(dOpen); }
+  // Velas verdes seguidas al final (cierre > apertura), para el cuadro de swing
+  let greenRun = 0;
+  for (let i = series.length - 1; i >= 0 && opens[i] != null && series[i] > opens[i]; i--) greenRun++;
   const prev = lv && lv.prevClose != null ? lv.prevClose : series[series.length - 2];
   const smas = {}; [20, 50, 100, 200].forEach(n => smas[n] = sma(series, n));
   const rsis = rsiSeries(series, 14), rsi = rsis[rsis.length - 1];
@@ -146,7 +152,7 @@ async function analyze(symbol, withHistory = false) {
     dist: { 20: pct(price, smas[20]), 50: pct(price, smas[50]), 100: pct(price, smas[100]), 200: pct(price, smas[200]) },
     zone: zoneOf(price, smas),
     rsi, ret_3m: ret3m, high_52w: Math.max(...year), low_52w: Math.min(...year),
-    ...sc, updated: t, open: lv ? lv.open : null,
+    ...sc, updated: t, open: lv ? lv.open : null, green_run: greenRun,
   };
   if (withHistory) {
     const k = 260, s = {};

@@ -149,7 +149,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .dow .t{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;color:#000;margin-bottom:6px}.dow .t span{font-size:12px;font-weight:600;color:var(--muted)}
 .dleg{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-bottom:8px}.dleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}.dleg .g{background:#86efac}.dleg .y{background:#fde68a}
 #dowl{overflow-y:auto;flex:1;min-height:0;max-height:560px}
-.dw{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px}
+.dw .v{font-size:10px;font-weight:800;color:#15803d;min-width:30px;text-align:center}.dw{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px}
 .dw b{display:block;font-size:14px;color:#000}.dw .n{min-width:0}.dw .n div{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dw .p{font-weight:800;font-size:13px;padding:1px 7px;border-radius:7px;font-variant-numeric:tabular-nums}.dw .d{font-size:12px;font-weight:800;color:#991b1b;min-width:54px;text-align:right}
 .dw.g{background:#dcfce7}.dw.g .p{background:#86efac;color:#14532d}.dw.y .p{background:#fde68a;color:#854d0e}
@@ -177,7 +177,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 <main>
 <section id="scan">
  <div class="hero">
-  <div class="dow"><div class="t">Dow Jones · canal alcista bajo la MM20 <span id="dowc"></span></div><div class="dleg"><span><i class="g"></i>Verde: lista para swing (sobre MM50)</span><span><i class="y"></i>Bajo MM50</span><span style="margin-left:auto">% bajo la MM20</span></div><div id="dowl"><div class="empty">Revisando las 30 del Dow…</div></div></div>
+  <div class="dow"><div class="t">Dow Jones · canal alcista bajo la MM20 <span id="dowc"></span></div><div class="dleg"><span><i class="g"></i>Verde: 2.ª vela verde, lista para swing</span><span><i class="y"></i>Esperando velas</span><span style="margin-left:auto">% bajo la MM20</span></div><div id="dowl"><div class="empty">Revisando las 30 del Dow…</div></div></div>
   <div class="opps"><div class="t">Oportunidades ahora <span>zona verde</span></div><div id="opps"><div class="empty">Escaneando el mercado…</div></div></div>
   <div class="hm"><div class="hmh"><b>S&amp;P 500 · rendimiento de hoy</b><span id="hmst">Cargando…</span></div><div class="hmap" id="hmap"></div><div class="hmleg"><span>−3 %</span><i style="background:#f63538"></i><i style="background:#bf4045"></i><i style="background:#8b444e"></i><i style="background:#414554"></i><i style="background:#35764e"></i><i style="background:#2f9e4f"></i><i style="background:#30cc5a"></i><span>+3 %</span></div></div>
  </div>
@@ -354,11 +354,11 @@ const DOW=(LISTS.find(l=>l.id==='dow30')||{symbols:[]}).symbols;let dowT=0;
 const upCh=x=>{const m=x.sma||{};return m['50']!=null&&m['100']!=null&&m['200']!=null&&x.dist['200']>0&&m['50']>m['100']&&m['100']>m['200']};
 async function loadDow(){if(Date.now()-dowT<60000)return;dowT=Date.now();await fetchSymbols(DOW,()=>renderAll());renderAll()}
 function renderDow(){const el=$('#dowl');if(!el)return;const xs=DOW.map(s=>DATA[s]).filter(x=>x&&!x.error&&x.price!=null&&x.dist&&x.dist['20']!=null);
- // Verde: retroceso sano, bajo la MM20 pero aún sobre la MM50. Amarillo: ya perdió la MM50 (sigue sobre la MM200)
- const sw=x=>x.dist['50']!=null&&x.dist['50']>=0;
+ // Verde: lista para swing, ya lleva al menos dos velas diarias verdes seguidas (cierre > apertura). Amarillo: aún no
+ const sw=x=>(x.green_run||0)>=2;
  const below=xs.filter(x=>x.dist['20']<0&&upCh(x)).sort((a,b)=>(sw(a)?0:1)-(sw(b)?0:1)||a.dist['20']-b.dist['20']);
  $('#dowc').textContent=xs.length?`${below.length} de ${DOW.length}`:'';
- el.innerHTML=below.length?below.map(x=>`<div class="dw ${sw(x)?'g':'y'}" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name||'')}</div></div><span class="p">${f(x.price)}</span><span class="d">${sg(x.dist['20'])}</span></div>`).join(''):`<div class="empty">${xs.length?'Ahora ninguna del Dow está bajo su MM20 dentro de un canal alcista.':'Revisando las 30 del Dow…'}</div>`;
+ el.innerHTML=below.length?below.map(x=>`<div class="dw ${sw(x)?'g':'y'}" data-s="${esc(x.symbol)}"><div class="n"><b>${esc(x.symbol)}</b><div>${esc(x.name||'')}</div></div><span class="p">${f(x.price)}</span><span class="v">${x.green_run>=2?'▲'.repeat(Math.min(x.green_run,4)):x.green_run===1?'1ª vela':''}</span><span class="d">${sg(x.dist['20'])}</span></div>`).join(''):`<div class="empty">${xs.length?'Ahora ninguna del Dow está bajo su MM20 dentro de un canal alcista.':'Revisando las 30 del Dow…'}</div>`;
  el.querySelectorAll('[data-s]').forEach(t=>t.onclick=()=>detail(t.dataset.s))}
 // Agrupa varias peticiones de repintado en una sola por fotograma
 let rq=0;function renderAll(){if(rq)return;rq=requestAnimationFrame(()=>{rq=0;renderNow()})}
