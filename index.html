@@ -149,6 +149,7 @@ svg text{fill:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
 .dow .t{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;color:#000;margin-bottom:6px}.dow .t span{font-size:12px;font-weight:600;color:var(--muted)}
 .dleg{display:flex;gap:12px;font-size:11px;color:var(--muted);margin-bottom:8px}.dleg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}.dleg .g{background:#86efac}.dleg .y{background:#fde68a}
 #dowl{overflow-y:auto;flex:1;min-height:0;max-height:560px}
+.tvh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}.tvh a{text-decoration:none;font-weight:800;color:#fff;background:var(--brand);padding:8px 14px;border-radius:10px;font-size:13px}.tvh a:hover{background:var(--brand-d)}.tvbox{height:620px}@media(max-width:640px){.tvbox{height:460px}}
 .dw .v{font-size:10px;font-weight:800;color:#15803d;min-width:30px;text-align:center}.dw{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:8px;align-items:center;padding:6px 8px;border-top:1px solid var(--line);cursor:pointer;border-radius:8px}
 .dw b{display:block;font-size:14px;color:#000}.dw .n{min-width:0}.dw .n div{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dw .p{font-weight:800;font-size:13px;padding:1px 7px;border-radius:7px;font-variant-numeric:tabular-nums}.dw .d{font-size:12px;font-weight:800;color:#991b1b;min-width:54px;text-align:right}
@@ -393,10 +394,18 @@ function renderDetailHead(){const x=curDetail;const live=DATA[x.symbol]&&!DATA[x
 async function detail(s){s=(s||'').trim().toUpperCase();if(!s)return;tab('det');$('#ds').value=s;$('#dout').innerHTML='Cargando '+esc(s)+'…';
  try{const x=await api('/api/detail?symbol='+encodeURIComponent(s));curDetail=x;DATA[s]=Object.assign({},x,{history:undefined});
  $('#dout').innerHTML=`<div class="cards" id="dhead"></div>
- <div class="grid2"><div class="panel"><div class="lg"><span>${sw('var(--fg)','',2)}Precio</span><span>${sw('var(--m20)','8 3 2 3',1.2)}MM20 ${f(x.sma['20'])}</span><span>${sw('var(--m50)','2 3',1.4)}MM50 ${f(x.sma['50'])}</span><span>${sw('var(--m100)','6 4',1.4)}MM100 ${f(x.sma['100'])}</span><span>${sw('var(--m200)','',1.6)}MM200 ${f(x.sma['200'])}</span></div><div id="ch"></div></div>
+ <div class="grid2"><div class="panel"><div class="tvh"><b>Gráfico avanzado · ${esc(s)}</b><a class="b" href="https://es.finance.yahoo.com/chart/${encodeURIComponent(s)}" target="_blank" rel="noopener">Abrir en Yahoo Finance ↗</a></div><div id="ch" class="tvbox"></div></div>
  <div class="panel"><b>Desglose del score</b><div class="bd" style="margin-top:10px">${x.breakdown.map(b=>`<span>${b.name}</span><span>${b.points}/${b.max}</span><div class="meter"><span style="width:${b.points/b.max*100}%"></span></div>`).join('')}</div>
  <div style="margin-top:8px"><b>Distancia a las medias</b>${['20','50','100','200'].map(n=>`<div class="bd"><span>MM${n} (${f(x.sma[n])})</span><span>${sg(x.dist[n])}</span></div>`).join('')}</div></div></div>`;
- renderDetailHead();drawChart(x.history);setLive()}catch(e){$('#dout').innerHTML='<span class="err">No se pudo cargar '+esc(s)+': '+esc(e.message)+'</span>'}}
+ renderDetailHead();tvChart(s);setLive()}catch(e){$('#dout').innerHTML='<span class="err">No se pudo cargar '+esc(s)+': '+esc(e.message)+'</span>'}}
+// Gráfico avanzado de TradingView (Yahoo no permite insertar su gráfico en otra página)
+const TV_EX={MC:'BME',TO:'TSX',L:'LSE',DE:'XETR',PA:'EURONEXT',AS:'EURONEXT',MI:'MIL',SW:'SIX',HK:'HKEX',T:'TSE'};
+function tvSym(s){if(s.startsWith('^'))return s.slice(1);const m=s.match(/^(.+)\.([A-Z]+)$/);if(m&&TV_EX[m[2]])return TV_EX[m[2]]+':'+m[1].replace(/-/g,'_');if(s.endsWith('-USD'))return 'COINBASE:'+s.replace('-','');return s.replace(/-/g,'.')}
+function tvChart(s){const el=$('#ch');if(!el)return;el.innerHTML='<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div></div>';
+ const sc=document.createElement('script');sc.type='text/javascript';sc.async=true;sc.src='https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+ sc.text=JSON.stringify({autosize:true,symbol:tvSym(s),interval:'D',timezone:'America/Caracas',theme:'light',style:'1',locale:'es',allow_symbol_change:true,withdateranges:true,hide_side_toolbar:false,details:false,calendar:false,
+  studies:[20,50,100,200].map(n=>({id:'MASimple@tv-basicstudies',inputs:{length:n}})).concat([{id:'RSI@tv-basicstudies'}]),support_host:'https://www.tradingview.com'});
+ el.firstChild.appendChild(sc)}
 function drawChart(h){const W=900,H1=300,H2=110,P=48,n=h.close.length;const all=[...h.close,...h.sma20,...h.sma50,...h.sma100,...h.sma200].filter(v=>v!=null);
  const lo=Math.min(...all),hi=Math.max(...all),X=i=>P+i*(W-P-10)/(n-1),Y=v=>10+(hi-v)/(hi-lo||1)*(H1-20),R=v=>H1+14+(100-v)/100*(H2-20);
  const line=(a,c,w=1.4,da='')=>{let d='';a.forEach((v,i)=>{if(v==null)return;d+=(d?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)});return `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" ${da?`stroke-dasharray="${da}"`:''}/>`};
