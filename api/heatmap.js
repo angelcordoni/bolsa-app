@@ -46,9 +46,10 @@ async function build() {
   }
 }
 
-module.exports = async (req, res) => {
+const { guard } = require("./_auth");
+module.exports = guard(async (req, res) => {
   try {
     if (!cache || Date.now() - cache.at > 60e3) cache = { at: Date.now(), data: await build() };
     send(res, 200, cache.data, 60);
   } catch (e) { send(res, 502, { error: e.message }); }
-};
+});
