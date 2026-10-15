@@ -3,6 +3,8 @@
 const crypto = require("crypto");
 const CERTS_URL = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com";
 let certs = null, certsUntil = 0;
+// Correos con acceso (decisión de jose); la variable ALLOWED_EMAILS de Vercel la reemplaza
+const DEFAULT_ALLOWED = "angelcordoni@gmail.com";
 
 async function getCerts() {
   if (certs && Date.now() < certsUntil) return certs;
@@ -48,7 +50,7 @@ function guard(handler) {
     let user;
     try { user = await verifyToken(m && m[1], projectId); }
     catch (e) { return deny(res, 401, "Inicia sesión para usar Bag Scanner"); }
-    const allow = (process.env.ALLOWED_EMAILS || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+    const allow = (process.env.ALLOWED_EMAILS || DEFAULT_ALLOWED).split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
     if (allow.length && !allow.includes(String(user.email || "").toLowerCase())) return deny(res, 403, "Este correo no tiene acceso a Bag Scanner");
     req.user = user;
     return handler(req, res);
